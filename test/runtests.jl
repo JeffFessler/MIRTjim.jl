@@ -1,6 +1,5 @@
-using MIRTjim
-using Test
+# runtests.jl
 
 @testset "MIRTjim.jl" begin
-    # Write your tests here.
+    include("jim.jl")
 end

@@ -1,5 +1,8 @@
+"""
+    `MIRTjim` is the "jiffy image display" for the Michigan Image Reconstruction Toolbox
+"""
 module MIRTjim
 
-# Write your package code here.
+    include("jim.jl")
 
-end
+end # module
