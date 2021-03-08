@@ -1,0 +1,7 @@
+name = "MIRTjim"
+uuid = "170b2178-6dee-4cb0-8729-b3e8b57834cc"
+authors = ["Jeff Fessler <fessler@umich.edu> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.5"
