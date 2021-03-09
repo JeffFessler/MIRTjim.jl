@@ -1,6 +1,6 @@
 # jim.jl
 
-using MIRT: jim
+using MIRTjim: jim
 using LaTeXStrings
 using Test: @test, @test_throws
 
