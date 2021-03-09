@@ -21,5 +21,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/JeffFessler/MIRTjim.jl",
+    repo="github.com/JeffFessler/MIRTjim.jl.git",
 )
