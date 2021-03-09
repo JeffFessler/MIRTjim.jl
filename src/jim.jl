@@ -47,7 +47,7 @@ end
 """
     jim(z, ...)
 
-A jiffy image display of `x` using `heatmap`
+A jiffy image display of `z` using `heatmap`
 
 in
 - `z` image, can be 2D or higher, if higher then it uses `mosaicviews`
