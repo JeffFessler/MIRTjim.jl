@@ -5,16 +5,15 @@ https://github.com/JeffFessler/MIRTjim.jl
 [![action status][action-img]][action-url]
 [![pkgeval status][pkgeval-img]][pkgeval-url]
 [![codecov][codecov-img]][codecov-url]
+<!--
 [![coveralls][coveralls-img]][coveralls-url]
+[![Coverage](https://coveralls.io/repos/github/JeffFessler/MIRTjim.jl/badge.svg?branch=main)]
+(https://coveralls.io/github/JeffFessler/MIRTjim.jl?branch=main)
+-->
 [![docs stable][docs-stable-img]][docs-stable-url]
 [![docs dev][docs-dev-img]][docs-dev-url]
 [![license][license-img]][license-url]
-[![code-style][code-style-img]][code-style-url]
-
-[![Coverage](https://coveralls.io/repos/github/JeffFessler/MIRTjim.jl/badge.svg?branch=main)]
-(https://coveralls.io/github/JeffFessler/MIRTjim.jl?branch=main)
-[![Coverage](https://codecov.io/gh/JeffFessler/MIRTjim.jl/branch/main/graph/badge.svg)]
-(https://codecov.io/gh/JeffFessler/MIRTjim.jl)
+[![code-style][code-blue-img]][code-blue-url]
 
 This repo exports the function `jim` that is a "jiffy image display" function
 for showing 2D grayscale images
