@@ -5,6 +5,7 @@ https://github.com/JeffFessler/MIRTjim.jl
 [![action status][action-img]][action-url]
 [![pkgeval status][pkgeval-img]][pkgeval-url]
 [![codecov][codecov-img]][codecov-url]
+[![license][license-img]][license-url]
 <!--
 [![coveralls][coveralls-img]][coveralls-url]
 [![Coverage](https://coveralls.io/repos/github/JeffFessler/MIRTjim.jl/badge.svg?branch=main)]
@@ -12,7 +13,6 @@ https://github.com/JeffFessler/MIRTjim.jl
 -->
 [![docs stable][docs-stable-img]][docs-stable-url]
 [![docs dev][docs-dev-img]][docs-dev-url]
-[![license][license-img]][license-url]
 [![code-style][code-blue-img]][code-blue-url]
 
 This repo exports the function `jim` that is a "jiffy image display" function
