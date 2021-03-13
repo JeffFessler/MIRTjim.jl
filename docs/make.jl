@@ -12,15 +12,16 @@ makedocs(;
     sitename = "MIRTjim.jl",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
-        canonical = "https://JeffFessler.github.io/MIRTjim.jl/stable",
-        assets = String[],
+#       canonical = "https://JeffFessler.github.io/MIRTjim.jl/stable",
+#       assets = String[],
     ),
-    pages=[
+    pages = [
         "Home" => "index.md",
     ],
 )
 
 deploydocs(;
     repo="github.com/JeffFessler/MIRTjim.jl.git",
-    devbranch = "main"
+    devbranch = "main",
+	push_preview = true,
 )
