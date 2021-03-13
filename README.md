@@ -11,8 +11,8 @@ https://github.com/JeffFessler/MIRTjim.jl
 [![Coverage](https://coveralls.io/repos/github/JeffFessler/MIRTjim.jl/badge.svg?branch=main)]
 (https://coveralls.io/github/JeffFessler/MIRTjim.jl?branch=main)
 -->
-[![docs stable][docs-stable-img]][docs-stable-url]
-[![docs dev][docs-dev-img]][docs-dev-url]
+[![docs-stable][docs-stable-img]][docs-stable-url]
+[![docs-dev][docs-dev-img]][docs-dev-url]
 [![code-style][code-blue-img]][code-blue-url]
 
 This repo exports the function `jim` that is a "jiffy image display" function
