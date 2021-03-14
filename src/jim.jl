@@ -177,10 +177,11 @@ end # jim
 
 
 # handle case of complex image
-function jim(z::AbstractArray{<:Number} ;
-            abswarn::Bool = jim_def[:abswarn],
-            kwargs...
-        )
+function jim(
+    z::AbstractArray{<:Number} ;
+    abswarn::Bool = jim_def[:abswarn],
+    kwargs...
+)
 
     if !(eltype(z) <: Real)
         abswarn && (@warn "magnitude at $(caller_name())")
@@ -191,7 +192,7 @@ end
 
 
 """
-    jim(z, title ; kwargs...)
+    jim(z, title::String ; kwargs...)
 """
 jim(z::AbstractArray{<:Number}, title::AbstractString ; kwargs...) =
     jim(z ; title=title, kwargs...)
@@ -204,7 +205,7 @@ jim(x, y, z ; kwargs...) = jim(z ; x=x, y=y, kwargs...)
 
 
 """
-    jim(x, y, z, title ; kwargs...)
+    jim(x, y, z, title::String ; kwargs...)
 """
 jim(x, y, z, title::AbstractString ; kwargs...) =
     jim(z ; x=x, y=y, title=title, kwargs...)
@@ -227,7 +228,7 @@ end
 #end
 
 """
-    jim(key, value)
+    jim(key::Symbol, value::Any)
 set default value for one of the keys
 """
 function jim(key::Symbol, value)
@@ -238,7 +239,7 @@ end
 
 
 """
-    jim(:test)
+    jim(:test::Symbol)
 
 `jim(:keys)` return default keys
 
