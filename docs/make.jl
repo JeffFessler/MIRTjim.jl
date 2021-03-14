@@ -21,7 +21,9 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/JeffFessler/MIRTjim.jl.git",
+    repo = "github.com/JeffFessler/MIRTjim.jl.git",
     devbranch = "main",
-	push_preview = true,
+    devurl = "dev",
+    versions = ["stable" => "v#.#.#", devurl => devurl]
+#   push_preview = true,
 )
