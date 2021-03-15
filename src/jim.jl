@@ -131,7 +131,7 @@ function jim(z::AbstractArray{<:Real} ;
     if minimum(z) ≈ maximum(z) # uniform or nearly uniform image
         x = 1:size(z,1)
         y = 1:size(z,2)
-        plot(aspect_ratio=aspect_ratio,
+        plot( ; aspect_ratio,
             xlim = [x[1], x[end]],
             ylim = [y[1], y[end]],
             title,
@@ -146,7 +146,8 @@ function jim(z::AbstractArray{<:Real} ;
             "Nearly uniform $((minimum(z),maximum(z)))"
         annotate!((sum(x)/length(x), sum(y)/length(y), tmp, :red))
     else
-        heatmap(xy..., z', transpose=false,
+        heatmap(xy..., z' ;
+            transpose = false,
             aspect_ratio,
             clim,
             color,
