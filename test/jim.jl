@@ -1,4 +1,4 @@
-# jim.jl
+# jim.jl test
 
 using MIRTjim: jim
 using LaTeXStrings

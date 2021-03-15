@@ -24,6 +24,6 @@ deploydocs(;
     repo = "github.com/JeffFessler/MIRTjim.jl.git",
     devbranch = "main",
     devurl = "dev",
-    versions = ["stable" => "v#.#.#", "dev" => "dev"]
+    versions = ["stable" => "v^", "dev" => "dev"]
 #   push_preview = true,
 )
