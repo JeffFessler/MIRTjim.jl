@@ -32,8 +32,8 @@ jim_def = Dict([
  :abswarn => isinteractive(), # warn when taking abs of complex images?
 ])
 
-minfloor = x -> floor(minimum(x), digits=jim_def[:tickdigit])
-maxceil = x -> ceil(maximum(x), digits=jim_def[:tickdigit])
+minfloor = x -> floor(minimum(x), digits = jim_def[:tickdigit])
+maxceil = x -> ceil(maximum(x), digits = jim_def[:tickdigit])
 
 """
     nothing_else(x, y)
@@ -122,7 +122,7 @@ function jim(z::AbstractArray{<:Real} ;
         if ncol == 0
             ncol = Int(floor(sqrt(prod(size(z)[3:end]))))
         end
-        z = mosaicview(z ; fillvalue=padval, ncol=ncol, npad=mosaic_npad)
+        z = mosaicview(z ; fillvalue = padval, ncol, npad = mosaic_npad)
         xy = () # no x,y for mosaic
     elseif fft0
         z = FFTView(z)[x,y]
@@ -168,7 +168,7 @@ function jim(z::AbstractArray{<:Real} ;
         plot_box! = (ox, oy) -> plot!(
             ox .+ [0,1,1,0,0] * n1 .+ 0.0,
             oy .+ [0,0,1,1,0] * n2 .+ 0.0,
-            line=jim_def[:line3type], label="")
+            line = jim_def[:line3type], label="")
         for ii=0:n3-1
             i1 = mod(ii, m1)
             i2 = ii ÷ m1
@@ -199,20 +199,20 @@ end
     jim(z, title::String ; kwargs...)
 """
 jim(z::AbstractArray{<:Number}, title::AbstractString ; kwargs...) =
-    jim(z ; title=title, kwargs...)
+    jim(z ; title, kwargs...)
 
 
 """
     jim(x, y, z ; kwargs...)
 """
-jim(x, y, z ; kwargs...) = jim(z ; x=x, y=y, kwargs...)
+jim(x, y, z ; kwargs...) = jim(z ; x, y, kwargs...)
 
 
 """
     jim(x, y, z, title::String ; kwargs...)
 """
 jim(x, y, z, title::AbstractString ; kwargs...) =
-    jim(z ; x=x, y=y, title=title, kwargs...)
+    jim(z ; x, y, title, kwargs...)
 
 
 """
@@ -223,13 +223,6 @@ function jim()
     @doc jim
 end
 
-
-#"""
-#`jim(abswarn=false)`
-#"""
-#function jim( ; abswarn::Bool=jim_state_abswarn)
-#    global jim_state_abswarn = abswarn
-#end
 
 """
     jim(key::Symbol, value::Any)
