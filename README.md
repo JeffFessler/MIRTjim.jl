@@ -29,6 +29,8 @@ will eventually keep
 `MIRT.jl` lighter
 by avoiding dependence on `Plots.jl` there.
 
+Requires Julia ≥1.5.
+
 <!-- URLs -->
 
 [action-img]: https://github.com/JeffFessler/MIRTjim.jl/workflows/CI/badge.svg

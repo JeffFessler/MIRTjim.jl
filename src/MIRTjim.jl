@@ -1,5 +1,6 @@
 """
-    `MIRTjim` is the "jiffy image display" for the Michigan Image Reconstruction Toolbox
+    `MIRTjim` exports the "jiffy image display" `jim`
+for the Michigan Image Reconstruction Toolbox (MIRT)
 """
 module MIRTjim
 

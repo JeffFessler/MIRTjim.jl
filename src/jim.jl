@@ -101,6 +101,7 @@ function jim(z::AbstractArray{<:Real} ;
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= 0),
     yreverse::Bool = nothing_else(jim_def[:yreverse], y[1] > y[end]),
     abswarn::Bool = jim_def[:abswarn], # ignored here
+    kwargs...
 )
 
     # because some backends require y to be in ascending order
@@ -133,28 +134,30 @@ function jim(z::AbstractArray{<:Real} ;
         plot(aspect_ratio=aspect_ratio,
             xlim = [x[1], x[end]],
             ylim = [y[1], y[end]],
-            title=title,
-            yflip=yflip,
-            xlabel=xlabel,
-            ylabel=ylabel,
-            xtick=xtick,
-            ytick=ytick,
+            title,
+            yflip,
+            xlabel,
+            ylabel,
+            xtick,
+            ytick,
+            kwargs...
         )
         tmp = (minimum(z) == maximum(z)) ? "Uniform $(z[1])" :
             "Nearly uniform $((minimum(z),maximum(z)))"
         annotate!((sum(x)/length(x), sum(y)/length(y), tmp, :red))
     else
         heatmap(xy..., z', transpose=false,
-            aspect_ratio=aspect_ratio,
-            clim=clim,
-            color=color,
-            colorbar=colorbar,
-            title=title,
-            yflip=yflip,
-            xlabel=xlabel,
-            ylabel=ylabel,
-            xtick=xtick,
-            ytick=ytick,
+            aspect_ratio,
+            clim,
+            color,
+            colorbar,
+            title,
+            yflip,
+            xlabel,
+            ylabel,
+            xtick,
+            ytick,
+            kwargs...
         )
     end
 
