@@ -6,7 +6,7 @@ jiffy image display
 
 export jim
 
-using Plots: heatmap, plot, plot!, annotate!
+using Plots: heatmap, plot, plot!
 using MosaicViews: mosaicview
 using FFTViews: FFTView
 
@@ -68,8 +68,8 @@ option
 - `ylabel`; default `""`
 - `yflip`; default `true` if `minimum(y) >= 0`
 - `yreverse`; default `true` if `y[1] > y[end]`
-- `x` values for x axis; default `1:size(z,1)`
-- `y` values for y axis; default `1:size(z,2)`
+- `x` values for x axis; default `collect(axes(z)[1])`
+- `y` values for y axis; default `collect(axes(z)[2])`
 - `xtick`; default `[minimum(x),maximum(x)]`
 - `ytick`; default `[minimum(y),maximum(y)]`
 
@@ -92,8 +92,8 @@ function jim(z::AbstractArray{<:Real} ;
     xlabel::AbstractString = jim_def[:xlabel],
     ylabel::AbstractString = jim_def[:ylabel],
     fft0::Bool = jim_def[:fft0],
-    x = fft0 ? ((-size(z,1)÷2):(size(z,1)÷2-1)) : (1:size(z,1)),
-    y = fft0 ? ((-size(z,2)÷2):(size(z,2)÷2-1)) : (1:size(z,2)),
+    x = fft0 ? ((-size(z,1)÷2):(size(z,1)÷2-1)) : collect(axes(z)[1]),
+    y = fft0 ? ((-size(z,2)÷2):(size(z,2)÷2-1)) : collect(axes(z)[2]),
     xtick = (minimum(x) < 0 && maximum(x) > 0) ?
         [minfloor(x),0,maxceil(x)] : [minfloor(x),maxceil(x)],
     ytick = (minimum(y) < 0 && maximum(y) > 0) ?
@@ -120,7 +120,7 @@ function jim(z::AbstractArray{<:Real} ;
         n2 += mosaic_npad
         n3 = size(z,3)
         if ncol == 0
-            ncol = Int(floor(sqrt(prod(size(z)[3:end]))))
+            ncol = floor(Int, sqrt(prod(size(z)[3:end])))
         end
         z = mosaicview(z ; fillvalue = padval, ncol, npad = mosaic_npad)
         xy = () # no x,y for mosaic
@@ -129,22 +129,20 @@ function jim(z::AbstractArray{<:Real} ;
     end
 
     if minimum(z) ≈ maximum(z) # uniform or nearly uniform image
-        x = 1:size(z,1)
-        y = 1:size(z,2)
+        tmp = (minimum(z) == maximum(z)) ? "Uniform $(z[1])" :
+            "Nearly uniform $((minimum(z),maximum(z)))"
         plot( ; aspect_ratio,
-            xlim = [x[1], x[end]],
-            ylim = [y[1], y[end]],
+            xlim = (x[1], x[end]),
+            ylim = (y[1], y[end]),
             title,
             yflip,
             xlabel,
             ylabel,
             xtick,
             ytick,
+            annotate = (x[(end+1)÷2], y[(end+1)÷2], tmp, :red),
             kwargs...
         )
-        tmp = (minimum(z) == maximum(z)) ? "Uniform $(z[1])" :
-            "Nearly uniform $((minimum(z),maximum(z)))"
-        annotate!((sum(x)/length(x), sum(y)/length(y), tmp, :red))
     else
         heatmap(xy..., z' ;
             transpose = false,
