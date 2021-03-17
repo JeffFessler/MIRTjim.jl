@@ -241,11 +241,16 @@ end
 `jim(:defs)` return `Dict` of default keys / vals
 
 `jim(:key)` return `Dict[key]` if possible
+
+`jim(:blank)` return blank plot
 """
 function jim(test::Symbol)
     global jim_def
     if test === :keys
         return sort(collect(keys(jim_def)))
+    end
+    if test === :blank
+        return plot(legend=false, grid=false, foreground_color_subplot=:white)
     end
     if test === :defs
         return jim_def
