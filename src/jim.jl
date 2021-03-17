@@ -140,7 +140,7 @@ function jim(z::AbstractArray{<:Real} ;
             ylabel,
             xtick,
             ytick,
-            annotate = (x[end÷2], y[end÷2], tmp, :red),
+            annotate = (x[(end+1)÷2], y[(end+1)÷2], tmp, :red),
             kwargs...
         )
     else
