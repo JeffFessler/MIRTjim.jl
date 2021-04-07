@@ -70,8 +70,8 @@ option
 - `yreverse`; default `true` if `y[1] > y[end]`
 - `x` values for x axis; default `collect(axes(z)[1])`
 - `y` values for y axis; default `collect(axes(z)[2])`
-- `xtick`; default `[minimum(x),maximum(x)]`
-- `ytick`; default `[minimum(y),maximum(y)]`
+- `xticks`; default `[minimum(x),maximum(x)]`
+- `yticks`; default `[minimum(y),maximum(y)]`
 
 out
 - returns plot handle, type `Plots.Plot`
@@ -94,9 +94,9 @@ function jim(z::AbstractArray{<:Real} ;
     fft0::Bool = jim_def[:fft0],
     x = fft0 ? ((-size(z,1)÷2):(size(z,1)÷2-1)) : collect(axes(z)[1]),
     y = fft0 ? ((-size(z,2)÷2):(size(z,2)÷2-1)) : collect(axes(z)[2]),
-    xtick = (minimum(x) < 0 && maximum(x) > 0) ?
+    xticks = (minimum(x) < 0 && maximum(x) > 0) ?
         [minfloor(x),0,maxceil(x)] : [minfloor(x),maxceil(x)],
-    ytick = (minimum(y) < 0 && maximum(y) > 0) ?
+    yticks = (minimum(y) < 0 && maximum(y) > 0) ?
         [minfloor(y),0,maxceil(y)] : [minfloor(y),maxceil(y)],
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= 0),
     yreverse::Bool = nothing_else(jim_def[:yreverse], y[1] > y[end]),
@@ -138,8 +138,8 @@ function jim(z::AbstractArray{<:Real} ;
             yflip,
             xlabel,
             ylabel,
-            xtick,
-            ytick,
+            xticks,
+            yticks,
             annotate = (x[(end+1)÷2], y[(end+1)÷2], tmp, :red),
             kwargs...
         )
@@ -154,8 +154,8 @@ function jim(z::AbstractArray{<:Real} ;
             yflip,
             xlabel,
             ylabel,
-            xtick,
-            ytick,
+            xticks,
+            yticks,
             kwargs...
         )
     end
