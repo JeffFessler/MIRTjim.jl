@@ -59,7 +59,7 @@ option
 - `colorbar` (e.g. `:none`); default `:legend`
 - `ncol` for mosaicview for 3D and higher arrays; default `0` does auto select
 - `padval` padding value for mosaic view; default `minimum(z)`
-- `line3plot` lines around sub image for 3d mosaic; default `false`
+- `line3plot` lines around sub image for 3d mosaic; default `true`
 - `line3type` line type around sub image for 3d mosaic; default `(:yellow)`
 - `mosaic_npad` # of pixel padding for mosaic view; default `1`
 - `fft0` if true use FFTView to display; default `false`
