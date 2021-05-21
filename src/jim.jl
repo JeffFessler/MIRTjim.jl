@@ -214,15 +214,6 @@ jim(x, y, z, title::AbstractString ; kwargs...) =
 
 
 """
-    jim()
-return docstring if user calls `jim()` with no arguments
-"""
-function jim()
-    @doc jim
-end
-
-
-"""
     jim(key::Symbol, value::Any)
 set default value for one of the keys
 """

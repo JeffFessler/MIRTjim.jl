@@ -6,7 +6,6 @@ using OffsetArrays: OffsetArray
 using Test: @test, @test_throws
 
 
-jim()
 jim(:keys)
 jim(:clim)
 @test typeof(jim(:defs)) <: Dict
