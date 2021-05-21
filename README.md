@@ -6,11 +6,6 @@ https://github.com/JeffFessler/MIRTjim.jl
 [![pkgeval status][pkgeval-img]][pkgeval-url]
 [![codecov][codecov-img]][codecov-url]
 [![license][license-img]][license-url]
-<!--
-[![coveralls][coveralls-img]][coveralls-url]
-[![Coverage](https://coveralls.io/repos/github/JeffFessler/MIRTjim.jl/badge.svg?branch=main)]
-(https://coveralls.io/github/JeffFessler/MIRTjim.jl?branch=main)
--->
 [![docs-stable][docs-stable-img]][docs-stable-url]
 [![docs-dev][docs-dev-img]][docs-dev-url]
 [![code-style][code-blue-img]][code-blue-url]
@@ -25,14 +20,13 @@ Isolating this function in this repo,
 separate from the primary repo
 for the
 [Michigan Image Reconstruction Toolbox (MIRT)](https://github.com/JeffFessler/MIRT.jl)
-will eventually keep
+keeps
 `MIRT.jl` lighter
-by avoiding dependence on `Plots.jl` there.
+by avoiding a dependence on `Plots.jl` there.
 
-Requires Julia ≥1.5.
+Tested with Julia ≥ 1.6.
 
 <!-- URLs -->
-
 [action-img]: https://github.com/JeffFessler/MIRTjim.jl/workflows/CI/badge.svg
 [action-url]: https://github.com/JeffFessler/MIRTjim.jl/actions
 [build-img]: https://github.com/JeffFessler/MIRTjim.jl/workflows/CI/badge.svg?branch=main
@@ -43,15 +37,9 @@ Requires Julia ≥1.5.
 [code-blue-url]: https://github.com/invenia/BlueStyle
 [codecov-img]: https://codecov.io/github/JeffFessler/MIRTjim.jl/coverage.svg?branch=main
 [codecov-url]: https://codecov.io/github/JeffFessler/MIRTjim.jl?branch=main
-[coveralls-img]: https://coveralls.io/repos/JeffFessler/MIRTjim.jl/badge.svg?branch=main
-[coveralls-url]: https://coveralls.io/github/JeffFessler/MIRTjim.jl?branch=main
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://JeffFessler.github.io/MIRTjim.jl/stable
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
 [docs-dev-url]: https://JeffFessler.github.io/MIRTjim.jl/dev
 [license-img]: http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat
 [license-url]: LICENSE
-<!--
-[travis-img]: https://travis-ci.org/JeffFessler/MIRTjim.jl.svg?branch=main
-[travis-url]: https://travis-ci.org/JeffFessler/MIRTjim.jl
--->
