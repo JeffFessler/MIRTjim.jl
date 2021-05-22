@@ -10,6 +10,8 @@ using Test: @test, @testset, @test_throws
     prompt()
     @test prompt(_tmp) isa Symbol # return to original state
 
+    io_out = IOBuffer()
+
     io_in = IOBuffer("d")
     prompt( ; io_in, io_out)
     @test prompt(:state) == :draw
