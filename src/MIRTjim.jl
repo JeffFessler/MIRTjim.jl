@@ -5,5 +5,6 @@ for the Michigan Image Reconstruction Toolbox (MIRT)
 module MIRTjim
 
     include("jim.jl")
+    include("prompt.jl")
 
 end # module
