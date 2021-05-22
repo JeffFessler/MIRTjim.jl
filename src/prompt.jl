@@ -5,14 +5,10 @@ prompt user to hit a key to continue
 
 export prompt
 
-import Plots # gui, isplotnull
-
-#using REPL #: RadioMenu, request
+import Plots # isplotnull, plot!
 import REPL
-using REPL.TerminalMenus
 
-# global prompt state
-prompt_state = :prompt
+prompt_state = :prompt # global prompt state
 
 
 """
@@ -22,7 +18,12 @@ Prompt user to hit any key to continue, after `gui()`.
 Some keys have special actions: `[q]uit [d]raw [n]odraw`.
 Call `prompt(:prompt)` to revert to default.
 """
-function prompt( ; gui::Bool=true)
+function prompt( ;
+    gui::Bool=true,
+    io_in::IO = stdin,
+    kwargs...,
+)
+
     global prompt_state
 
     prompt_state === :nodraw && return nothing
@@ -31,32 +32,18 @@ function prompt( ; gui::Bool=true)
 
     (prompt_state === :draw) && return nothing
 
-    c = isinteractive() ? wait_for_key() : 'd' # call only if interactive
+    # call wait_for_key only if interactive or testing
+    if isinteractive() || io_in != stdin
+        c = wait_for_key( ; io_in, kwargs...)
+    else
+        c = 'd'
+    end
 
     (c == 'd') && (prompt_state = :draw)
     (c == 'n') && (prompt_state = :nodraw)
     (c == 'q') && throw("quit")
 
     return nothing
-
-#=
-    list = ["continue*", "run", "draw", "quit", "nodraw"]
-    menu = RadioMenu(list) #;, pagesize=3)
-
-    preface = ""
-    [name, line] = caller_name
-    if isempty(name)
-        preface = []
-    else
-        preface = sprintf('%s %d: ', name, line)
-    end
-
-    what = "enter to continue (or select)"
-
-    choice = request(preface * what, menu)
-    nothing
-=#
-
 end
 
 
@@ -67,22 +54,18 @@ From:
 https://discourse.julialang.org/t/wait-for-a-keypress/20218
 """
 function wait_for_key( ;
-    io_in = stdin,
-    io_out = stdout,
+    io_in::IO = stdin,
+    io_out::IO = stdout,
     prompt::String = "press any key [d]raw [n]odraw [q]uit : ",
 )
 
-    # this function is called only in interactive sessions so no code coverage
-
     print(io_out, prompt)
 
-    Base.Sys.iswindows() && (readline(); return nothing) # PC
+    t = REPL.TerminalMenus.terminal
+    REPL.Terminals.raw!(t, true)
+    char = read(io_in, Char)
+    REPL.Terminals.raw!(t, false)
 
-    # non-windows version:
-    setraw!(raw) = ccall(:jl_tty_set_mode, Int32, (Ptr{Cvoid},Int32), io_in.handle, raw)
-    setraw!(true)
-    char = Char(read(io_in, 1)[1])
-    setraw!(false)
     write(io_out, char)
     write(io_out, "\n")
 
@@ -97,6 +80,8 @@ Set prompt state to one of:
 - `:prompt` call `gui()` if possible, then prompt user.
 - `:draw` call `gui()` if possible, then continue.
 - `:nodraw` do not call `gui()`, just continue.
+
+Use `prompt(:state)` to query current state.
 
 Actually it calls `display(plot!())` instead of `gui()`
 """
