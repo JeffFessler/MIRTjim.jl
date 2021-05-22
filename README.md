@@ -16,7 +16,17 @@ for showing 2D grayscale images
 It is basically a wrapper around `Plots.heatmap`
 with natural defaults.
 
-Isolating this function in this repo,
+Also exported is `prompt` that first calls `Plots.gui()`
+to display the current plot,
+then waits for a user key press.
+Some keys have special effects:
+* `[q]uit` throws an error
+* `[d]raw` disables further prompting and the plots are just drawn
+* `[n]odraw` avoids the `gui()` call (useful for non-interactive testing)
+
+Calling `prompt(:prompt)` reverts the default key-press behavior.
+
+Isolating these functions in this repo,
 separate from the primary repo
 for the
 [Michigan Image Reconstruction Toolbox (MIRT)](https://github.com/JeffFessler/MIRT.jl)
