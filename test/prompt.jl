@@ -4,6 +4,9 @@ using MIRTjim: prompt
 using Test: @test, @testset, @test_throws
 
 @testset "prompt" begin
+    prompt() # test "else c == 'd'"
+    @test prompt(:state) === :draw
+
     _tmp = prompt(:state) # save current state
     prompt(:draw)
     @test prompt(:state) === :draw
