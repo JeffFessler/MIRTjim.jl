@@ -30,10 +30,19 @@ jim_def = Dict([
  :yflip => nothing, # defer to minimum value of y - see default below
  :yreverse => nothing, # defer to whether y is non-ascending
  :abswarn => isinteractive(), # warn when taking abs of complex images?
+ :infwarn => isinteractive(), # warn when image has Inf?
+ :nanwarn => isinteractive(), # warn when image has NaN?
+ #:misswarn => isinteractive(), # warn when image has Missing?
 ])
 
-minfloor = x -> floor(minimum(x), digits = jim_def[:tickdigit])
-maxceil = x -> ceil(maximum(x), digits = jim_def[:tickdigit])
+#isgood = x -> isfinite(x) & !ismissing(x) # not Inf, NaN, Missing
+#maxgood = v -> maximum(x -> isgood(x) ? x : -Inf, v ; init=-Inf)
+#mingood = v -> minimum(x -> isgood(x) ? x : Inf, v ; init=Inf)
+maxgood = v -> maximum(x[isfinite.(x)] ; init=-Inf)
+mingood = v -> minimum(x[isfinite.(x)] ; init=Inf)
+
+minfloor = x -> floor(mingood(x), digits = jim_def[:tickdigit])
+maxceil = x -> ceil(maxgood(x), digits = jim_def[:tickdigit])
 
 """
     nothing_else(x, y)
@@ -80,13 +89,13 @@ out
 """
 function jim(z::AbstractArray{<:Real} ;
     aspect_ratio = jim_def[:aspect_ratio],
-    clim = nothing_else(jim_def[:clim], (minimum(z), maximum(z))),
+    clim = nothing_else(jim_def[:clim], (mingood(z), maxgood(z))),
     color = jim_def[:color],
     colorbar = jim_def[:colorbar],
     line3plot = jim_def[:line3plot],
     line3type = jim_def[:line3type],
     ncol::Int = jim_def[:ncol],
-    padval = nothing_else(jim_def[:padval], minimum(z)),
+    padval = nothing_else(jim_def[:padval], mingood(z)),
     mosaic_npad::Int = jim_def[:mosaic_npad],
     title::AbstractString = jim_def[:title],
     xlabel::AbstractString = jim_def[:xlabel],
@@ -94,15 +103,20 @@ function jim(z::AbstractArray{<:Real} ;
     fft0::Bool = jim_def[:fft0],
     x = fft0 ? ((-size(z,1)÷2):(size(z,1)÷2-1)) : collect(axes(z)[1]),
     y = fft0 ? ((-size(z,2)÷2):(size(z,2)÷2-1)) : collect(axes(z)[2]),
-    xticks = (minimum(x) < 0 && maximum(x) > 0) ?
+    xticks = (mingood(x) < 0 && maxgood(x) > 0) ?
         [minfloor(x),0,maxceil(x)] : [minfloor(x),maxceil(x)],
-    yticks = (minimum(y) < 0 && maximum(y) > 0) ?
+    yticks = (mingood(y) < 0 && maxgood(y) > 0) ?
         [minfloor(y),0,maxceil(y)] : [minfloor(y),maxceil(y)],
-    yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= 0),
+    yflip::Bool = nothing_else(jim_def[:yflip], mingood(y) >= 0),
     yreverse::Bool = nothing_else(jim_def[:yreverse], y[1] > y[end]),
     abswarn::Bool = jim_def[:abswarn], # ignored here
+    infwarn::Bool = jim_def[:infwarn],
+    nanwarn::Bool = jim_def[:nanwarn],
+#   misswarn::Bool = jim_def[:misswarn],
     kwargs...
 )
+
+    !any(isfinite, z) && throw("no finite values")
 
     # because some backends require y to be in ascending order
     if yreverse
@@ -128,9 +142,14 @@ function jim(z::AbstractArray{<:Real} ;
         z = FFTView(z)[x,y]
     end
 
-    if minimum(z) ≈ maximum(z) # uniform or nearly uniform image
-        tmp = (minimum(z) == maximum(z)) ? "Uniform $(z[1])" :
-            "Nearly uniform $((minimum(z),maximum(z)))"
+    # warnings for non-number values
+    infwarn && any(isinf, z) && @warn("$(sum(isinf, z)) ±Inf")
+    nanwarn && any(isnan, z) && @warn("$(sum(isnan, z)) NaN")
+#   misswarn && any(ismissing, z) && @warn("$(sum(ismissing, z)) missing")
+
+    if mingood(z) ≈ maxgood(z) # uniform or nearly uniform image
+        tmp = (mingood(z) == maxgood(z)) ? "Uniform $(z[1])" :
+            "Nearly uniform $((mingood(z),maxgood(z)))"
         plot( ; aspect_ratio,
             xlim = (x[1], x[end]),
             ylim = (y[1], y[end]),
