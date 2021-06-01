@@ -32,17 +32,14 @@ jim_def = Dict([
  :abswarn => isinteractive(), # warn when taking abs of complex images?
  :infwarn => isinteractive(), # warn when image has Inf?
  :nanwarn => isinteractive(), # warn when image has NaN?
- #:misswarn => isinteractive(), # warn when image has Missing?
 ])
 
-#isgood = x -> isfinite(x) & !ismissing(x) # not Inf, NaN, Missing
-#maxgood = v -> maximum(x -> isgood(x) ? x : -Inf, v ; init=-Inf)
-#mingood = v -> minimum(x -> isgood(x) ? x : Inf, v ; init=Inf)
-maxgood = v -> maximum(x[isfinite.(x)] ; init=-Inf)
-mingood = v -> minimum(x[isfinite.(x)] ; init=Inf)
+# exclude Inf, NaN:
+maxgood = z -> maximum(z[isfinite.(z)] ; init=-Inf)
+mingood = z -> minimum(z[isfinite.(z)] ; init=Inf)
 
-minfloor = x -> floor(mingood(x), digits = jim_def[:tickdigit])
-maxceil = x -> ceil(maxgood(x), digits = jim_def[:tickdigit])
+minfloor = x -> floor(minimum(x), digits = jim_def[:tickdigit])
+maxceil = x -> ceil(maximum(x), digits = jim_def[:tickdigit])
 
 """
     nothing_else(x, y)
@@ -103,16 +100,15 @@ function jim(z::AbstractArray{<:Real} ;
     fft0::Bool = jim_def[:fft0],
     x = fft0 ? ((-size(z,1)÷2):(size(z,1)÷2-1)) : collect(axes(z)[1]),
     y = fft0 ? ((-size(z,2)÷2):(size(z,2)÷2-1)) : collect(axes(z)[2]),
-    xticks = (mingood(x) < 0 && maxgood(x) > 0) ?
+    xticks = (minimum(x) < 0 && maximum(x) > 0) ?
         [minfloor(x),0,maxceil(x)] : [minfloor(x),maxceil(x)],
-    yticks = (mingood(y) < 0 && maxgood(y) > 0) ?
+    yticks = (minimum(y) < 0 && maximum(y) > 0) ?
         [minfloor(y),0,maxceil(y)] : [minfloor(y),maxceil(y)],
-    yflip::Bool = nothing_else(jim_def[:yflip], mingood(y) >= 0),
+    yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= 0),
     yreverse::Bool = nothing_else(jim_def[:yreverse], y[1] > y[end]),
     abswarn::Bool = jim_def[:abswarn], # ignored here
     infwarn::Bool = jim_def[:infwarn],
     nanwarn::Bool = jim_def[:nanwarn],
-#   misswarn::Bool = jim_def[:misswarn],
     kwargs...
 )
 
@@ -145,7 +141,6 @@ function jim(z::AbstractArray{<:Real} ;
     # warnings for non-number values
     infwarn && any(isinf, z) && @warn("$(sum(isinf, z)) ±Inf")
     nanwarn && any(isnan, z) && @warn("$(sum(isnan, z)) NaN")
-#   misswarn && any(ismissing, z) && @warn("$(sum(ismissing, z)) missing")
 
     if mingood(z) ≈ maxgood(z) # uniform or nearly uniform image
         tmp = (mingood(z) == maxgood(z)) ? "Uniform $(z[1])" :
