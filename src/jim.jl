@@ -30,7 +30,13 @@ jim_def = Dict([
  :yflip => nothing, # defer to minimum value of y - see default below
  :yreverse => nothing, # defer to whether y is non-ascending
  :abswarn => isinteractive(), # warn when taking abs of complex images?
+ :infwarn => isinteractive(), # warn when image has Inf?
+ :nanwarn => isinteractive(), # warn when image has NaN?
 ])
+
+# exclude Inf, NaN:
+maxgood = z -> maximum(z[isfinite.(z)] ; init=-Inf)
+mingood = z -> minimum(z[isfinite.(z)] ; init=Inf)
 
 minfloor = x -> floor(minimum(x), digits = jim_def[:tickdigit])
 maxceil = x -> ceil(maximum(x), digits = jim_def[:tickdigit])
@@ -80,13 +86,13 @@ out
 """
 function jim(z::AbstractArray{<:Real} ;
     aspect_ratio = jim_def[:aspect_ratio],
-    clim = nothing_else(jim_def[:clim], (minimum(z), maximum(z))),
+    clim = nothing_else(jim_def[:clim], (mingood(z), maxgood(z))),
     color = jim_def[:color],
     colorbar = jim_def[:colorbar],
     line3plot = jim_def[:line3plot],
     line3type = jim_def[:line3type],
     ncol::Int = jim_def[:ncol],
-    padval = nothing_else(jim_def[:padval], minimum(z)),
+    padval = nothing_else(jim_def[:padval], mingood(z)),
     mosaic_npad::Int = jim_def[:mosaic_npad],
     title::AbstractString = jim_def[:title],
     xlabel::AbstractString = jim_def[:xlabel],
@@ -101,8 +107,12 @@ function jim(z::AbstractArray{<:Real} ;
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= 0),
     yreverse::Bool = nothing_else(jim_def[:yreverse], y[1] > y[end]),
     abswarn::Bool = jim_def[:abswarn], # ignored here
+    infwarn::Bool = jim_def[:infwarn],
+    nanwarn::Bool = jim_def[:nanwarn],
     kwargs...
 )
+
+    !any(isfinite, z) && throw("no finite values")
 
     # because some backends require y to be in ascending order
     if yreverse
@@ -128,9 +138,13 @@ function jim(z::AbstractArray{<:Real} ;
         z = FFTView(z)[x,y]
     end
 
-    if minimum(z) ≈ maximum(z) # uniform or nearly uniform image
-        tmp = (minimum(z) == maximum(z)) ? "Uniform $(z[1])" :
-            "Nearly uniform $((minimum(z),maximum(z)))"
+    # warnings for non-number values
+    infwarn && any(isinf, z) && @warn("$(sum(isinf, z)) ±Inf")
+    nanwarn && any(isnan, z) && @warn("$(sum(isnan, z)) NaN")
+
+    if mingood(z) ≈ maxgood(z) # uniform or nearly uniform image
+        tmp = (mingood(z) == maxgood(z)) ? "Uniform $(z[1])" :
+            "Nearly uniform $((mingood(z),maxgood(z)))"
         plot( ; aspect_ratio,
             xlim = (x[1], x[end]),
             ylim = (y[1], y[end]),
