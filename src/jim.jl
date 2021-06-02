@@ -6,7 +6,7 @@ jiffy image display
 
 export jim
 
-using Plots: heatmap, plot, plot!
+using Plots: heatmap, plot, plot!, Plot
 using MosaicViews: mosaicview
 using FFTViews: FFTView
 
@@ -217,13 +217,13 @@ jim(z::AbstractArray{<:Number}, title::AbstractString ; kwargs...) =
 """
     jim(x, y, z ; kwargs...)
 """
-jim(x, y, z ; kwargs...) = jim(z ; x, y, kwargs...)
+jim(x::AbstractVector{<:Number}, y, z ; kwargs...) = jim(z ; x, y, kwargs...)
 
 
 """
     jim(x, y, z, title::String ; kwargs...)
 """
-jim(x, y, z, title::AbstractString ; kwargs...) =
+jim(x::AbstractVector{<:Number}, y, z, title::AbstractString ; kwargs...) =
     jim(z ; x, y, title, kwargs...)
 
 
@@ -235,6 +235,15 @@ function jim(key::Symbol, value)
     global jim_def
     !haskey(jim_def, key) && throw(ArgumentError("no key $key"))
     jim_def[key] = value
+end
+
+
+"""
+    jim(plot1, plot2, ... ; kwargs...)
+Subplot-type layout
+"""
+function jim(p::Plot, args... ; kwargs...)
+    plot(p, args... ; kwargs...)
 end
 
 
