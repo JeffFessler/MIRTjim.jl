@@ -217,13 +217,13 @@ jim(z::AbstractArray{<:Number}, title::AbstractString ; kwargs...) =
 """
     jim(x, y, z ; kwargs...)
 """
-jim(x, y, z ; kwargs...) = jim(z ; x, y, kwargs...)
+jim(x::AbstractVector{<:Number}, y, z ; kwargs...) = jim(z ; x, y, kwargs...)
 
 
 """
     jim(x, y, z, title::String ; kwargs...)
 """
-jim(x, y, z, title::AbstractString ; kwargs...) =
+jim(x::AbstractVector{<:Number}, y, z, title::AbstractString ; kwargs...) =
     jim(z ; x, y, title, kwargs...)
 
 
