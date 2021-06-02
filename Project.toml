@@ -1,7 +1,7 @@
 name = "MIRTjim"
 uuid = "170b2178-6dee-4cb0-8729-b3e8b57834cc"
 authors = ["Jeff Fessler <fessler@umich.edu> and contributors"]
-version = "0.6"
+version = "0.7"
 
 [deps]
 FFTViews = "4f61f5a4-77b1-5117-aa51-3ab5ef4ef0cd"
