@@ -10,3 +10,5 @@ include("prompt.jl")
 
     @test length(detect_ambiguities(MIRTjim)) == 0
 end
+
+include("unit.jl")
