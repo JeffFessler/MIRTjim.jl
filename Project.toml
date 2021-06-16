@@ -1,7 +1,7 @@
 name = "MIRTjim"
 uuid = "170b2178-6dee-4cb0-8729-b3e8b57834cc"
 authors = ["Jeff Fessler <fessler@umich.edu> and contributors"]
-version = "0.7.0"
+version = "0.8.0"
 
 [deps]
 FFTViews = "4f61f5a4-77b1-5117-aa51-3ab5ef4ef0cd"
@@ -14,5 +14,5 @@ REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 FFTViews = "0.3"
 LaTeXStrings = "1"
 MosaicViews = "0.2, 0.3"
-Plots = "1.15"
+Plots = "1.16"
 julia = "1.6"

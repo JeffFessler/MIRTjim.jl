@@ -9,6 +9,7 @@ export jim
 using Plots: heatmap, plot, plot!, Plot
 using MosaicViews: mosaicview
 using FFTViews: FFTView
+#using Unitful: unit
 
 
 # global default key/values
@@ -98,8 +99,10 @@ function jim(z::AbstractArray{<:Real} ;
     xlabel::AbstractString = jim_def[:xlabel],
     ylabel::AbstractString = jim_def[:ylabel],
     fft0::Bool = jim_def[:fft0],
-    x = fft0 ? ((-size(z,1)÷2):(size(z,1)÷2-1)) : collect(axes(z)[1]),
-    y = fft0 ? ((-size(z,2)÷2):(size(z,2)÷2-1)) : collect(axes(z)[2]),
+    x::AbstractVector{<:Real} =
+        fft0 ? ((-size(z,1)÷2):(size(z,1)÷2-1)) : collect(axes(z)[1]),
+    y::AbstractVector{<:Real} =
+        fft0 ? ((-size(z,2)÷2):(size(z,2)÷2-1)) : collect(axes(z)[2]),
     xticks = (minimum(x) < 0 && maximum(x) > 0) ?
         [minfloor(x),0,maxceil(x)] : [minfloor(x),maxceil(x)],
     yticks = (minimum(y) < 0 && maximum(y) > 0) ?
@@ -192,18 +195,21 @@ function jim(z::AbstractArray{<:Real} ;
 end # jim
 
 
-# handle case of complex image
+# complex image data
 function jim(
-    z::AbstractArray{<:Number} ;
+    z::AbstractArray{<:Complex} ;
     abswarn::Bool = jim_def[:abswarn],
     kwargs...
 )
 
-    if !(eltype(z) <: Real)
-        abswarn && (@warn "magnitude at $(caller_name())")
-        z = abs.(z)
-    end
-    jim(z ; kwargs...)
+    abswarn && (@warn "magnitude at $(caller_name())")
+    jim(abs.(z) ; kwargs...)
+end
+
+
+# other Numbers types (e.g., with units from Unitful)
+function jim(z::AbstractArray{<:Number} ; kwargs...)
+    jim(z / oneunit(z[1]) ; kwargs...)
 end
 
 
@@ -217,14 +223,34 @@ jim(z::AbstractArray{<:Number}, title::AbstractString ; kwargs...) =
 """
     jim(x, y, z ; kwargs...)
 """
-jim(x::AbstractVector{<:Number}, y, z ; kwargs...) = jim(z ; x, y, kwargs...)
+jim(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, z ; kwargs...) =
+    jim(z ; x, y, kwargs...)
+
+
+# Unitful axes currently unsupported, thanks to
+# https://github.com/PainterQubits/Unitful.jl/issues/455
+function jim(x, y, z ; labelunits::Bool = true, kwargs...)
+#=
+    if labelunits
+        xunit = labelunits ? " [" * unit(x[1]) * "]" : ""
+        yunit = labelunits ? " [" * unit(y[1]) * "]" : ""
+        kwargs[:xlabel] *= xunit
+        kwargs[:ylabel] *= yunit
+    end
+=#
+    jim(z ;
+        x = x / oneunit(x[1]),
+        y = y / oneunit(y[1]),
+        kwargs...,
+    )
+end
 
 
 """
     jim(x, y, z, title::String ; kwargs...)
 """
-jim(x::AbstractVector{<:Number}, y, z, title::AbstractString ; kwargs...) =
-    jim(z ; x, y, title, kwargs...)
+jim(x::AbstractVector, y, z, title::AbstractString ; kwargs...) =
+    jim(x, y, z ; title, kwargs...)
 
 
 """
