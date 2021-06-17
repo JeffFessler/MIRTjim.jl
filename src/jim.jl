@@ -59,7 +59,7 @@ function _ticks(x::AbstractVector{<:Number})
         maxceil = x -> ceil(maximum(x), digits = jim_def[:tickdigit])
     end
     z0 = zero(x[1]) # units
-    ticks = (minimum(x) < z0 && maximum(x) > x0) ?
+    ticks = (minimum(x) < z0 < maximum(x)) ?
         [minfloor(x), z0, maxceil(x)] :
         [minfloor(x), maxceil(x)]
     return ticks / oneunit(z0) # UnitfulRecipes needs unitless ticks!?
