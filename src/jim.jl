@@ -6,10 +6,10 @@ jiffy image display
 
 export jim
 
+using UnitfulRecipes
 using Plots: heatmap, plot, plot!, Plot
 using MosaicViews: mosaicview
 using FFTViews: FFTView
-#using Unitful: unit
 
 
 # global default key/values
@@ -25,8 +25,8 @@ jim_def = Dict([
  :mosaic_npad => 1,
  :tickdigit => 1,
  :title => "",
- :xlabel => "",
- :ylabel => "",
+ :xlabel => nothing,
+ :ylabel => nothing,
  :fft0 => false,
  :yflip => nothing, # defer to minimum value of y - see default below
  :yreverse => nothing, # defer to whether y is non-ascending
@@ -35,12 +35,11 @@ jim_def = Dict([
  :nanwarn => isinteractive(), # warn when image has NaN?
 ])
 
-# exclude Inf, NaN:
-maxgood = z -> maximum(z[isfinite.(z)] ; init=-Inf)
-mingood = z -> minimum(z[isfinite.(z)] ; init=Inf)
 
-minfloor = x -> floor(minimum(x), digits = jim_def[:tickdigit])
-maxceil = x -> ceil(maximum(x), digits = jim_def[:tickdigit])
+# exclude Inf, NaN:
+maxgood = z -> maximum(z[isfinite.(z)] / oneunit(z[1]) ; init=-Inf)
+mingood = z -> minimum(z[isfinite.(z)] / oneunit(z[1]) ; init=Inf)
+
 
 """
     nothing_else(x, y)
@@ -49,6 +48,29 @@ return `y` if `x` is nothing, else return `x`
 function nothing_else(x, y)
     return x == nothing ? y : x
 end
+
+
+# parsimonious axis ticks by default
+function _ticks(x::AbstractVector{<:Number})
+    minfloor = minimum
+    maxceil = maximum
+    if x[1] isa Real
+        minfloor = x -> floor(minimum(x), digits = jim_def[:tickdigit])
+        maxceil = x -> ceil(maximum(x), digits = jim_def[:tickdigit])
+    end
+    z0 = zero(x[1]) # units
+    ticks = (minimum(x) < z0 < maximum(x)) ?
+        [minfloor(x), z0, maxceil(x)] :
+        [minfloor(x), maxceil(x)]
+    return ticks / oneunit(z0) # UnitfulRecipes needs unitless ticks!?
+    # https://github.com/jw3126/UnitfulRecipes.jl/issues/55
+end
+
+
+# subtle issues with default labels depending on Unitful or not
+_label(s::Symbol, x::AbstractVector{<:Real}) =
+	isnothing(jim_def[s]) ? "" : jim_def[s]
+_label(s::Symbol, x::AbstractVector{<:Number}) = jim_def[s]
 
 
 """
@@ -71,13 +93,13 @@ option
 - `mosaic_npad` # of pixel padding for mosaic view; default `1`
 - `fft0` if true use FFTView to display; default `false`
 - `title`; default `""`
-- `xlabel`; default `""`
-- `ylabel`; default `""`
+- `xlabel`; default `nothing` (or units if applicable)
+- `ylabel`; default `nothing`
 - `yflip`; default `true` if `minimum(y) >= 0`
 - `yreverse`; default `true` if `y[1] > y[end]`
 - `x` values for x axis; default `collect(axes(z)[1])`
 - `y` values for y axis; default `collect(axes(z)[2])`
-- `xticks`; default `[minimum(x),maximum(x)]`
+- `xticks`; default `[minimum(x),maximum(x)]` (usually)
 - `yticks`; default `[minimum(y),maximum(y)]`
 
 out
@@ -85,7 +107,7 @@ out
 
 2019-02-23 Jeff Fessler, University of Michigan
 """
-function jim(z::AbstractArray{<:Real} ;
+function jim(z::AbstractArray{<:Number} ;
     aspect_ratio = jim_def[:aspect_ratio],
     clim = nothing_else(jim_def[:clim], (mingood(z), maxgood(z))),
     color = jim_def[:color],
@@ -96,18 +118,16 @@ function jim(z::AbstractArray{<:Real} ;
     padval = nothing_else(jim_def[:padval], mingood(z)),
     mosaic_npad::Int = jim_def[:mosaic_npad],
     title::AbstractString = jim_def[:title],
-    xlabel::AbstractString = jim_def[:xlabel],
-    ylabel::AbstractString = jim_def[:ylabel],
     fft0::Bool = jim_def[:fft0],
-    x::AbstractVector{<:Real} =
+    x::AbstractVector{<:Number} =
         fft0 ? ((-size(z,1)÷2):(size(z,1)÷2-1)) : collect(axes(z)[1]),
-    y::AbstractVector{<:Real} =
+    y::AbstractVector{<:Number} =
         fft0 ? ((-size(z,2)÷2):(size(z,2)÷2-1)) : collect(axes(z)[2]),
-    xticks = (minimum(x) < 0 && maximum(x) > 0) ?
-        [minfloor(x),0,maxceil(x)] : [minfloor(x),maxceil(x)],
-    yticks = (minimum(y) < 0 && maximum(y) > 0) ?
-        [minfloor(y),0,maxceil(y)] : [minfloor(y),maxceil(y)],
-    yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= 0),
+    xticks = _ticks(x),
+    yticks = _ticks(y),
+    xlabel::Union{Nothing,AbstractString} = _label(:xlabel, x),
+    ylabel::Union{Nothing,AbstractString} = _label(:ylabel, y),
+    yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
     yreverse::Bool = nothing_else(jim_def[:yreverse], y[1] > y[end]),
     abswarn::Bool = jim_def[:abswarn], # ignored here
     infwarn::Bool = jim_def[:infwarn],
@@ -207,10 +227,12 @@ function jim(
 end
 
 
+#=
 # other Numbers types (e.g., with units from Unitful)
 function jim(z::AbstractArray{<:Number} ; kwargs...)
     jim(z / oneunit(z[1]) ; kwargs...)
 end
+=#
 
 
 """
@@ -222,32 +244,17 @@ jim(z::AbstractArray{<:Number}, title::AbstractString ; kwargs...) =
 
 """
     jim(x, y, z ; kwargs...)
+
+The `x` and `y` axes can be Unitful thanks to UnitfulRecipes.
 """
-jim(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, z ; kwargs...) =
+jim(x::AbstractVector{<:Number}, y::AbstractVector{<:Number}, z ; kwargs...) =
     jim(z ; x, y, kwargs...)
-
-
-# Unitful axes currently unsupported, thanks to
-# https://github.com/PainterQubits/Unitful.jl/issues/455
-function jim(x, y, z ; labelunits::Bool = true, kwargs...)
-#=
-    if labelunits
-        xunit = labelunits ? " [" * unit(x[1]) * "]" : ""
-        yunit = labelunits ? " [" * unit(y[1]) * "]" : ""
-        kwargs[:xlabel] *= xunit
-        kwargs[:ylabel] *= yunit
-    end
-=#
-    jim(z ;
-        x = x / oneunit(x[1]),
-        y = y / oneunit(y[1]),
-        kwargs...,
-    )
-end
 
 
 """
     jim(x, y, z, title::String ; kwargs...)
+
+Allow `title` as positional argument for convenience.
 """
 jim(x::AbstractVector, y, z, title::AbstractString ; kwargs...) =
     jim(x, y, z ; title, kwargs...)

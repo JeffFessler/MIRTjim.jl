@@ -15,8 +15,10 @@ for showing 2D grayscale images
 (and 3D grayscale images as a mosaic).
 It is basically a wrapper around `Plots.heatmap`
 with natural defaults.
+As of v0.9 it supports axes and images with units via
+[UnitfulRecipes.jl](https://github.com/jw3126/UnitfulRecipes.jl).
 
-Also exported is `prompt` that first calls `Plots.gui()`
+Also exported is function `prompt()` that first calls `Plots.gui()`
 to display the current plot,
 then waits for a user key press.
 Some keys have special effects:
