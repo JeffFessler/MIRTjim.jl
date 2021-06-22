@@ -8,8 +8,10 @@ export jim
 
 using UnitfulRecipes
 using Plots: heatmap, plot, plot!, Plot
+import Plots
 using MosaicViews: mosaicview
 using FFTViews: FFTView
+using OffsetArrays
 
 
 # global default key/values
@@ -168,24 +170,22 @@ function jim(z::AbstractMatrix{<:Number} ;
             annotate = (x[(end+1)÷2], y[(end+1)÷2], tmp, :red),
             kwargs...
         )
-    else
-        heatmap(xy..., z' ;
-            transpose = false,
-            aspect_ratio,
-            clim,
-            color,
-            colorbar,
-            title,
-            yflip,
-            xlabel,
-            ylabel,
-            xticks,
-            yticks,
-            kwargs...
-        )
     end
 
-    plot!()
+    return heatmap(xy..., z' ;
+        transpose = false,
+        aspect_ratio,
+        clim,
+        color,
+        colorbar,
+        title,
+        yflip,
+        xlabel,
+        ylabel,
+        xticks,
+        yticks,
+        kwargs...
+    )
 end # jim
 
 
@@ -248,6 +248,29 @@ function jim(
     abswarn && (@warn "magnitude at $(caller_name())")
     jim(abs.(z) ; kwargs...)
 end
+
+
+# OffsetArrays
+# https://github.com/JuliaPlots/Plots.jl/issues/2410
+_axes(z,j) = axes(z,j).parent .+ axes(z,j).offset
+function jim(z::OffsetMatrix{<:Number} ;
+    x = _axes(z,1),
+    y = _axes(z,2),
+    kwargs...
+)
+    jim(OffsetArrays.no_offset_view(z) ; x, y, kwargs...)
+end
+#=
+This approach fails because z' is no longer an OffsetMatrix
+function Plots.heatmap(z::OffsetMatrix{<:Number}; kwargs...)
+    x = axes(z,1); x = x.parent .+ x.offset
+    y = axes(z,2); y = y.parent .+ y.offset
+    heatmap(x, y, z; kwargs...)
+end
+function Plots.heatmap(x, y, z::OffsetMatrix{<:Number}; kwargs...)
+    heatmap(x, y, OffsetArrays.no_offset_view(z); kwargs...)
+end
+=#
 
 
 """
