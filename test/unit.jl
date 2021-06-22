@@ -1,7 +1,6 @@
 # unit.jl
 
 using Unitful
-#using UnitfulRecipes
 using MIRTjim: jim
 using Test: @test, @testset, @inferred
 

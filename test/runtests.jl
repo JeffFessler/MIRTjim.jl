@@ -13,7 +13,8 @@ end
 @testset "MIRTjim" begin
     include("jim.jl")
 
-    @test length(detect_ambiguities(MIRTjim)) == 0
+    @test isempty(detect_ambiguities(MIRTjim))
 end
 
 include("unit.jl")
+include("offset.jl")
