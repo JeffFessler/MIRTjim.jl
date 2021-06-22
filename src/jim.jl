@@ -37,8 +37,8 @@ jim_def = Dict([
 
 
 # exclude Inf, NaN:
-maxgood = z -> maximum(z[isfinite.(z)] / oneunit(z[1]) ; init=-Inf)
-mingood = z -> minimum(z[isfinite.(z)] / oneunit(z[1]) ; init=Inf)
+maxgood = z -> maximum(Iterators.filter(isfinite, z); init=-Inf*oneunit(z[1]))
+mingood = z -> minimum(Iterators.filter(isfinite, z); init=Inf*oneunit(z[1]))
 
 
 """
@@ -52,18 +52,18 @@ end
 
 # parsimonious axis ticks by default
 function _ticks(x::AbstractVector{<:Number})
-    minfloor = minimum
-    maxceil = maximum
     if x[1] isa Real
         minfloor = x -> floor(minimum(x), digits = jim_def[:tickdigit])
         maxceil = x -> ceil(maximum(x), digits = jim_def[:tickdigit])
+    else # Unitful
+        minfloor = x -> floor(eltype(x), minimum(x), digits = jim_def[:tickdigit])
+        maxceil = x -> ceil(eltype(x), maximum(x), digits = jim_def[:tickdigit])
     end
     z0 = zero(x[1]) # units
     ticks = (minimum(x) < z0 < maximum(x)) ?
         [minfloor(x), z0, maxceil(x)] :
         [minfloor(x), maxceil(x)]
-    return ticks / oneunit(z0) # UnitfulRecipes needs unitless ticks!?
-    # https://github.com/jw3126/UnitfulRecipes.jl/issues/55
+    return ticks
 end
 
 
@@ -168,7 +168,7 @@ function jim(z::AbstractArray{<:Number} ;
     if mingood(z) ≈ maxgood(z) # uniform or nearly uniform image
         tmp = (mingood(z) == maxgood(z)) ? "Uniform $(z[1])" :
             "Nearly uniform $((mingood(z),maxgood(z)))"
-        plot( ; aspect_ratio,
+        return plot( ; aspect_ratio,
             xlim = (x[1], x[end]),
             ylim = (y[1], y[end]),
             title,
@@ -181,6 +181,7 @@ function jim(z::AbstractArray{<:Number} ;
             kwargs...
         )
     else
+# todo: separate 2d and 3d
         heatmap(xy..., z' ;
             transpose = false,
             aspect_ratio,
