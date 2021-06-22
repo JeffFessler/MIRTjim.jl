@@ -338,7 +338,7 @@ function jim(test::Symbol)
         return plot(legend=false, grid=false, foreground_color_subplot=:white)
     end
     if test === :defs
-        return sort(jim_def) # todo: deprecated, use OrderedCollections
+        return jim_def
     end
     if haskey(jim_def, test)
         return jim_def[test]
