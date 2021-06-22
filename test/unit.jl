@@ -19,7 +19,7 @@ using Test: @test, @testset, @inferred
     p3 = jim(x, y, r)
     p4 = jim(x, y, f)
     p5 = jim(1:7, 1:5, f; xlabel="x", ylabel="y")
-    p6 = jim(x, y, f; xlabel="x", ylabel="y")
+    p6 = jim(x, y, f; xlabel="x", ylabel="y", clim=(50,100).*u"mm*s")
     plot(p1, p2, p3, p4, p5, p6); gui()
     @test p4 isa Plot
 end
