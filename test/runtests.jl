@@ -3,12 +3,9 @@
 using Test: @test, @testset, detect_ambiguities
 using MIRTjim
 
-include("prompt.jl")
-
 macro isplot(ex) # @isplot macro to streamline tests
     :(@test $(esc(ex)) isa Plots.Plot)
 end
-
 
 @testset "MIRTjim" begin
     include("jim.jl")
@@ -16,5 +13,7 @@ end
     @test isempty(detect_ambiguities(MIRTjim))
 end
 
-include("unit.jl")
+include("caller_name.jl")
 include("offset.jl")
+include("prompt.jl")
+include("unit.jl")
