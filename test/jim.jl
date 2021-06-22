@@ -9,7 +9,7 @@ include("isplot.jl")
 
 jim(:keys)
 jim(:clim)
-@test typeof(jim(:defs)) <: Dict
+@test jim(:defs) isa AbstractDict
 
 @test_throws String jim(:bad)
 
