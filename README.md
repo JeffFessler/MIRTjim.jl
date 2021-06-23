@@ -15,7 +15,7 @@ for showing 2D grayscale images
 (and 3D grayscale images as a mosaic).
 It is basically a wrapper around `Plots.heatmap`
 with natural defaults.
-As of v0.10 it supports
+As of v0.9 it supports
 axes, colorbar limits (`clims`) and images
 with physical units via
 [UnitfulRecipes.jl](https://github.com/jw3126/UnitfulRecipes.jl).
