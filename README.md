@@ -15,18 +15,52 @@ for showing 2D grayscale images
 (and 3D grayscale images as a mosaic).
 It is basically a wrapper around `Plots.heatmap`
 with natural defaults.
-As of v0.9 it supports axes and images with units via
+As of v0.10 it supports
+axes, colorbar limits (`clims`) and images
+with physical units via
 [UnitfulRecipes.jl](https://github.com/jw3126/UnitfulRecipes.jl).
 
-Also exported is function `prompt()` that first calls `Plots.gui()`
+
+## Getting started
+
+```julia
+using Pkg
+Pkg.add("MIRTjim")
+```
+
+
+## Example
+
+```julia
+using MIRTjim
+z = (1:7) .+ (1:4)' # 7 × 4 matrix
+jim(z ; title="example") # figure
+```
+
+For more examples,
+see the
+[documentation](https://jefffessler.github.io/MIRTjim.jl/stable).
+
+
+### Helper functions
+
+This repo also exports two small helper functions.
+
+* `prompt()` first calls `Plots.gui()`
 to display the current plot,
 then waits for a user key press.
-Some keys have special effects:
-* `[q]uit` throws an error
-* `[d]raw` disables further prompting and the plots are just drawn
-* `[n]odraw` avoids the `gui()` call (useful for non-interactive testing)
 
-Calling `prompt(:prompt)` reverts the default key-press behavior.
+  Some keys have special effects:
+  + `[q]uit` throws an error
+  + `[d]raw` disables further prompting and the plots are just drawn
+  + `[n]odraw` avoids the `gui()` call (useful for non-interactive testing)
+
+  Calling `prompt(:prompt)` reverts the default key-press behavior.
+
+* `caller_name()` uses `stacktrace` (in `Base`)
+to return the file name and line number that called the current function.
+It can be helpful for debugging and for giving warnings some context.
+
 
 Isolating these functions in this repo,
 separate from the primary repo
@@ -35,6 +69,9 @@ for the
 keeps
 `MIRT.jl` lighter
 by avoiding a dependence on `Plots.jl` there.
+
+
+### Compatibility
 
 Tested with Julia ≥ 1.6.
 

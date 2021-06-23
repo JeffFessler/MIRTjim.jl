@@ -8,8 +8,10 @@ export jim
 
 using UnitfulRecipes
 using Plots: heatmap, plot, plot!, Plot
+import Plots
 using MosaicViews: mosaicview
 using FFTViews: FFTView
+using OffsetArrays
 
 
 # global default key/values
@@ -38,7 +40,13 @@ jim_def = Dict([
 
 # exclude Inf, NaN:
 maxgood = z -> maximum(Iterators.filter(isfinite, z); init=-Inf*oneunit(z[1]))
-mingood = z -> minimum(Iterators.filter(isfinite, z); init=Inf*oneunit(z[1]))
+function mingood(z::AbstractArray{<:Number})
+   minimum(Iterators.filter(isfinite, z); init=Inf*oneunit(z[1]))
+end
+function mingood(z::AbstractArray{<:Complex})
+   zf = Iterators.filter(isfinite, z)
+   minimum(Iterators.map(abs, zf); init=Inf*oneunit(abs(z[1])))
+end
 
 
 """
@@ -69,8 +77,10 @@ end
 
 # subtle issues with default labels depending on Unitful or not
 _label(s::Symbol, x::AbstractVector{<:Real}) =
-	isnothing(jim_def[s]) ? "" : jim_def[s]
+    isnothing(jim_def[s]) ? "" : jim_def[s]
 _label(s::Symbol, x::AbstractVector{<:Number}) = jim_def[s]
+
+_fft0_axis(n::Int) = (-n÷2):(n÷2 - iseven(n))
 
 
 """
@@ -91,7 +101,7 @@ option
 - `line3plot` lines around sub image for 3d mosaic; default `true`
 - `line3type` line type around sub image for 3d mosaic; default `(:yellow)`
 - `mosaic_npad` # of pixel padding for mosaic view; default `1`
-- `fft0` if true use FFTView to display; default `false`
+- `fft0` if true use FFTView to display (2D only); default `false`
 - `title`; default `""`
 - `xlabel`; default `nothing` (or units if applicable)
 - `ylabel`; default `nothing`
@@ -107,29 +117,23 @@ out
 
 2019-02-23 Jeff Fessler, University of Michigan
 """
-function jim(z::AbstractArray{<:Number} ;
+function jim(z::AbstractMatrix{<:Number} ;
     aspect_ratio = jim_def[:aspect_ratio],
     clim = nothing_else(jim_def[:clim], (mingood(z), maxgood(z))),
     color = jim_def[:color],
     colorbar = jim_def[:colorbar],
-    line3plot = jim_def[:line3plot],
-    line3type = jim_def[:line3type],
-    ncol::Int = jim_def[:ncol],
-    padval = nothing_else(jim_def[:padval], mingood(z)),
-    mosaic_npad::Int = jim_def[:mosaic_npad],
     title::AbstractString = jim_def[:title],
     fft0::Bool = jim_def[:fft0],
-    x::AbstractVector{<:Number} =
-        fft0 ? ((-size(z,1)÷2):(size(z,1)÷2-1)) : collect(axes(z)[1]),
-    y::AbstractVector{<:Number} =
-        fft0 ? ((-size(z,2)÷2):(size(z,2)÷2-1)) : collect(axes(z)[2]),
+    x::AbstractVector{<:Number} = fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
+    y::AbstractVector{<:Number} = fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
+    xy::Tuple = (x,y),
     xticks = _ticks(x),
     yticks = _ticks(y),
     xlabel::Union{Nothing,AbstractString} = _label(:xlabel, x),
     ylabel::Union{Nothing,AbstractString} = _label(:ylabel, y),
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
     yreverse::Bool = nothing_else(jim_def[:yreverse], y[1] > y[end]),
-    abswarn::Bool = jim_def[:abswarn], # ignored here
+#   abswarn::Bool = jim_def[:abswarn], # ignored here
     infwarn::Bool = jim_def[:infwarn],
     nanwarn::Bool = jim_def[:nanwarn],
     kwargs...
@@ -143,21 +147,7 @@ function jim(z::AbstractArray{<:Number} ;
         z = reverse(z, dims=2)
     end
 
-    n1,n2,n3 = size(z,1), size(z,2), size(z,3)
-    if n3 == 1
-        z = z[:,:,1] # revert to 2D
-    end
-    xy = (x, y)
-    if ndims(z) > 2
-        n1 += mosaic_npad
-        n2 += mosaic_npad
-        n3 = size(z,3)
-        if ncol == 0
-            ncol = floor(Int, sqrt(prod(size(z)[3:end])))
-        end
-        z = mosaicview(z ; fillvalue = padval, ncol, npad = mosaic_npad)
-        xy = () # no x,y for mosaic
-    elseif fft0
+    if fft0
         z = FFTView(z)[x,y]
     end
 
@@ -180,25 +170,57 @@ function jim(z::AbstractArray{<:Number} ;
             annotate = (x[(end+1)÷2], y[(end+1)÷2], tmp, :red),
             kwargs...
         )
-    else
-# todo: separate 2d and 3d
-        heatmap(xy..., z' ;
-            transpose = false,
-            aspect_ratio,
-            clim,
-            color,
-            colorbar,
-            title,
-            yflip,
-            xlabel,
-            ylabel,
-            xticks,
-            yticks,
-            kwargs...
-        )
     end
 
+    return heatmap(xy..., z' ;
+        transpose = false,
+        aspect_ratio,
+        clim,
+        color,
+        colorbar,
+        title,
+        yflip,
+        xlabel,
+        ylabel,
+        xticks,
+        yticks,
+        kwargs...
+    )
+end # jim
+
+
+
+# 3D
+function jim(z::AbstractArray{<:Number} ;
+    line3plot = jim_def[:line3plot],
+    line3type = jim_def[:line3type],
+    ncol::Int = jim_def[:ncol],
+    padval = nothing_else(jim_def[:padval], mingood(z)),
+    mosaic_npad::Int = jim_def[:mosaic_npad],
+    fft0::Bool = jim_def[:fft0],
+    x::AbstractVector{<:Number} = axes(z,1),
+    y::AbstractVector{<:Number} = axes(z,2),
+    xy::Tuple = (),
+    xticks = _ticks(x),
+    yticks = _ticks(y),
+    kwargs...
+)
+
+    if ncol == 0
+        ncol = floor(Int, sqrt(prod(size(z)[3:end])))
+    end
+
+    n1,n2,n3 = size(z,1), size(z,2), size(z,3)
+    z = mosaicview(z ; fillvalue = padval, ncol, npad = mosaic_npad)
+    fft0 && @warn("fft0 option ignored for 3D")
+
+    xy = () # no x,y for mosaic
+    jim(z ; transpose = false, xy, xticks, yticks, kwargs...)
+
     if n3 > 1 && line3plot # lines around each subimage
+
+        n1 += mosaic_npad
+        n2 += mosaic_npad
         m1 = (1+size(z,1)) / n1 # add one because of mosaicview non-edge
         m2 = (1+size(z,2)) / n2
         plot_box! = (ox, oy) -> plot!(
@@ -213,12 +235,12 @@ function jim(z::AbstractArray{<:Number} ;
     end
     plot!()
 
-end # jim
+end # jim 3D
 
 
 # complex image data
 function jim(
-    z::AbstractArray{<:Complex} ;
+    z::AbstractMatrix{<:Complex} ;
     abswarn::Bool = jim_def[:abswarn],
     kwargs...
 )
@@ -228,10 +250,25 @@ function jim(
 end
 
 
+# OffsetArrays
+# https://github.com/JuliaPlots/Plots.jl/issues/2410
+_axes(z,j) = axes(z,j).parent .+ axes(z,j).offset
+function jim(z::OffsetMatrix{<:Number} ;
+    x = _axes(z,1),
+    y = _axes(z,2),
+    kwargs...
+)
+    jim(OffsetArrays.no_offset_view(z) ; x, y, kwargs...)
+end
 #=
-# other Numbers types (e.g., with units from Unitful)
-function jim(z::AbstractArray{<:Number} ; kwargs...)
-    jim(z / oneunit(z[1]) ; kwargs...)
+This approach fails because z' is no longer an OffsetMatrix
+function Plots.heatmap(z::OffsetMatrix{<:Number}; kwargs...)
+    x = axes(z,1); x = x.parent .+ x.offset
+    y = axes(z,2); y = y.parent .+ y.offset
+    heatmap(x, y, z; kwargs...)
+end
+function Plots.heatmap(x, y, z::OffsetMatrix{<:Number}; kwargs...)
+    heatmap(x, y, OffsetArrays.no_offset_view(z); kwargs...)
 end
 =#
 
