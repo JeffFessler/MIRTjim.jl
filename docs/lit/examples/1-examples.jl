@@ -29,7 +29,7 @@ jim(z ; xlabel="x", ylabel="y")
 
 
 # Compare with `Plots.heatmap` to see the differences
-# (transpose, color, distractingly many ticks):
+# (transpose, color, wrong aspect ratio, distractingly many ticks):
 
 import Plots
 Plots.heatmap(z)
@@ -58,7 +58,9 @@ jim(z3)
 # ### Units
 
 # `jim` supports units, with axis and colorbar units appended naturally,
-# thanks to UnitfulRecipes.jl
+# thanks to UnitfulRecipes.jl.
+# (The ylabel may be not visible in the web Documentation
+# but does appear properly when run locally.)
 
 using Unitful
 
