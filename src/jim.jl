@@ -12,14 +12,17 @@ import Plots
 using MosaicViews: mosaicview
 using FFTViews: FFTView
 using OffsetArrays
+#using MIRTjim: prompt
 
 
 # global default key/values
-jim_def = Dict([
+const jim_table = Dict([
  :aspect_ratio => :equal,
  :clim => nothing,
  :color => :grays,
  :colorbar => :legend,
+ :gui => false,
+ :prompt => false,
  :line3plot => true, # lines around sub image for 3d mosaic?
  :line3type => (:yellow),
  :ncol => 0,
@@ -37,6 +40,9 @@ jim_def = Dict([
  :nanwarn => isinteractive(), # warn when image has NaN?
 ])
 
+jim_def = deepcopy(jim_table)
+
+jim_stack = Any[] # for push! and pop!
 
 # exclude Inf, NaN:
 maxgood = z -> maximum(Iterators.filter(isfinite, z); init=-Inf*oneunit(z[1]))
@@ -96,6 +102,8 @@ option
 - `clim`; default `(minimum(z),maximum(z))`
 - `color` (colormap, e.g. `:hsv`); default `:grays`
 - `colorbar` (e.g. `:none`); default `:legend`
+- `gui` call `Plots.gui()` immediately?; default `false`
+- `prompt` call `prompt()` immediately?; default `false`
 - `ncol` for mosaicview for 3D and higher arrays; default `0` does auto select
 - `padval` padding value for mosaic view; default `minimum(z)`
 - `line3plot` lines around sub image for 3d mosaic; default `true`
@@ -124,6 +132,8 @@ function jim(z::AbstractMatrix{<:Number} ;
     colorbar = jim_def[:colorbar],
     title::AbstractString = jim_def[:title],
     fft0::Bool = jim_def[:fft0],
+    gui::Bool = jim_def[:gui],
+    prompt::Bool = jim_def[:prompt],
     x::AbstractVector{<:Number} = fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
     y::AbstractVector{<:Number} = fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
     xy::Tuple = (x,y),
@@ -158,7 +168,7 @@ function jim(z::AbstractMatrix{<:Number} ;
     if mingood(z) ≈ maxgood(z) # uniform or nearly uniform image
         tmp = (mingood(z) == maxgood(z)) ? "Uniform $(z[1])" :
             "Nearly uniform $((mingood(z),maxgood(z)))"
-        return plot( ; aspect_ratio,
+        p = plot( ; aspect_ratio,
             xlim = (x[1], x[end]),
             ylim = (y[1], y[end]),
             title,
@@ -172,7 +182,7 @@ function jim(z::AbstractMatrix{<:Number} ;
         )
     end
 
-    return heatmap(xy..., z' ;
+    p = heatmap(xy..., z' ;
         transpose = false,
         aspect_ratio,
         clim,
@@ -186,12 +196,18 @@ function jim(z::AbstractMatrix{<:Number} ;
         yticks,
         kwargs...
     )
+
+    gui && Plots.gui()
+    prompt && MIRTjim.prompt()
+    return p
 end # jim
 
 
 
 # 3D
 function jim(z::AbstractArray{<:Number} ;
+    gui::Bool = jim_def[:gui],
+    prompt::Bool = jim_def[:prompt],
     line3plot = jim_def[:line3plot],
     line3type = jim_def[:line3type],
     ncol::Int = jim_def[:ncol],
@@ -215,7 +231,8 @@ function jim(z::AbstractArray{<:Number} ;
     fft0 && @warn("fft0 option ignored for 3D")
 
     xy = () # no x,y for mosaic
-    jim(z ; transpose = false, xy, xticks, yticks, kwargs...)
+    p = jim(z ; transpose = false, xy, xticks, yticks,
+        gui=false, prompt=false, kwargs...)
 
     if n3 > 1 && line3plot # lines around each subimage
 
@@ -223,7 +240,7 @@ function jim(z::AbstractArray{<:Number} ;
         n2 += mosaic_npad
         m1 = (1+size(z,1)) / n1 # add one because of mosaicview non-edge
         m2 = (1+size(z,2)) / n2
-        plot_box! = (ox, oy) -> plot!(
+        plot_box! = (ox, oy) -> plot!(p,
             ox .+ [0,1,1,0,0] * n1 .+ 0.0,
             oy .+ [0,0,1,1,0] * n2 .+ 0.0,
             line = jim_def[:line3type], label="")
@@ -234,6 +251,9 @@ function jim(z::AbstractArray{<:Number} ;
         end
     end
     plot!()
+    gui && Plots.gui()
+    prompt && MIRTjim.prompt()
+    return p
 
 end # jim 3D
 
@@ -327,6 +347,12 @@ end
 
 `jim(:key)` return `Dict[key]` if possible
 
+`jim(:reset)` reset to defaults
+
+`jim(:push!)` `push!` current defaults to the stack
+
+`jim(:pop!)` `pop!` defaults from the stack
+
 `jim(:blank)` return blank plot
 """
 function jim(test::Symbol)
@@ -339,6 +365,15 @@ function jim(test::Symbol)
     end
     if test === :defs
         return jim_def
+    end
+    if test === :push!
+        return push!(jim_stack, deepcopy(jim_def))
+    end
+    if test === :pop!
+        return jim_def = deepcopy(pop!(jim_stack))
+    end
+    if test === :reset
+        return jim_def = deepcopy(jim_table)
     end
     if haskey(jim_def, test)
         return jim_def[test]

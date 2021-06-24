@@ -1,7 +1,7 @@
 name = "MIRTjim"
 uuid = "170b2178-6dee-4cb0-8729-b3e8b57834cc"
 authors = ["Jeff Fessler <fessler@umich.edu> and contributors"]
-version = "0.9.0"
+version = "0.10.0"
 
 [deps]
 FFTViews = "4f61f5a4-77b1-5117-aa51-3ab5ef4ef0cd"
@@ -15,7 +15,7 @@ UnitfulRecipes = "42071c24-d89e-48dd-8a24-8a12d9b8861f"
 [compat]
 FFTViews = "0.3"
 LaTeXStrings = "1"
-MosaicViews = "0.2, 0.3"
+MosaicViews = "0.3"
 OffsetArrays = "1.10"
 Plots = "1.16"
 UnitfulRecipes = "1.4"

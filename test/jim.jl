@@ -6,9 +6,14 @@ using Test: @test, @test_throws
 
 include("isplot.jl")
 
-jim(:keys)
-jim(:clim)
+@test jim(:keys) isa Vector{Symbol}
+@test jim(:clim) isa Nothing
 @test jim(:defs) isa AbstractDict
+
+@test MIRTjim.jim_stack isa Vector{Any}
+@test jim(:push!) isa Vector{Any}
+@test jim(:pop!) == jim(:reset)
+@test MIRTjim.jim_stack isa Vector{Any}
 
 @test_throws String jim(:bad)
 
@@ -28,4 +33,4 @@ jim(:abswarn, false)
 jim(:abswarn, true)
 @isplot jim(rand(4,5), color=:hsv)
 @isplot jim(jim(rand(2,3)), jim(rand(3,2)) ; layout=(2,1))
-jim(:blank)
+@isplot jim(:blank)
