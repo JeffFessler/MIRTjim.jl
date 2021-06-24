@@ -15,10 +15,10 @@
 
 using MIRTjim: jim, prompt
 
-# The following is helpful when running this example.jl file as a script;
+# The following line is helpful when running this example.jl file as a script;
 # this way it will prompt user to hit a key after each image is displayed.
 
-isinteractive() && jim(:prompt, true)
+isinteractive() && jim(:prompt, true);
 
 # ### Simple 2D image
 
@@ -38,7 +38,9 @@ jim(z ; xlabel="x", ylabel="y", title="f(x,y) = x * (y-4)^2")
 
 import Plots
 Plots.heatmap(z, title="heatmap")
-isinteractive() && prompt()
+
+#-
+isinteractive() && prompt();
 
 
 # Images often should include a title, so `title =` is optional.
@@ -93,4 +95,4 @@ jim(:push!) # save current defaults
 jim(:colorbar, :none) # disable colorbar for subsequent figures
 jim(:yflip, false) # have "y" axis increase upward
 jim(rand(9,7), "rand")
-jim(:pop!) # restore
+jim(:pop!); # restore
