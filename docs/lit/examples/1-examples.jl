@@ -13,7 +13,12 @@
 
 # First we tell Julia we are using this package,
 
-using MIRTjim: jim
+using MIRTjim: jim, prompt
+
+# The following is helpful when running this example.jl file as a script;
+# this way it will prompt user to hit a key after each image is displayed.
+
+isinteractive() && jim(:prompt, true)
 
 # ### Simple 2D image
 
@@ -23,18 +28,20 @@ using MIRTjim: jim
 # sampled as an array `z[x,y]` so the 1st index is horizontal direction.
 
 x, y = 1:9, 1:7
-f(x,y) = x * y^2
+f(x,y) = x * (y-4)^2
 z = f.(x, y') # 9 × 7 array
-jim(z ; xlabel="x", ylabel="y")
+jim(z ; xlabel="x", ylabel="y", title="f(x,y) = x * (y-4)^2")
 
 
 # Compare with `Plots.heatmap` to see the differences
 # (transpose, color, wrong aspect ratio, distractingly many ticks):
 
 import Plots
-Plots.heatmap(z)
+Plots.heatmap(z, title="heatmap")
+isinteractive() && prompt()
 
-# Images often should include a title.
+
+# Images often should include a title, so `title =` is optional.
 jim(z, "hello")
 
 
@@ -44,7 +51,7 @@ jim(z, "hello")
 
 using OffsetArrays
 zo = OffsetArray(z, (-3,-1))
-jim(zo)
+jim(zo, "OffsetArray example")
 
 
 # ### 3D arrays
@@ -52,7 +59,7 @@ jim(zo)
 # `jim` automatically makes 3D arrays into a mosaic.
 
 z3 = reshape(1:(9*7*6), (9, 7, 6))
-jim(z3)
+jim(z3, "3D")
 
 
 # ### Units
@@ -67,7 +74,7 @@ using Unitful
 x = (1:9)u"m/s"
 y = (1:7)u"s"
 zu = x * y'
-jim(x, y, zu ;
+jim(x, y, zu, "units" ;
     clim=(0,40).*u"m", xlabel="rate", ylabel="time", colorbar_title="distance")
 
 # See `UnitfulRecipes.jl` to customize the units
@@ -80,7 +87,10 @@ jim(x, y, zu ;
 jim(:defs)
 
 # One can set "global" defaults using appropriate keywords from above list.
+# Use `:push` and `pop:` for such changes to be temporary
 
+jim(:push!) # save current defaults
 jim(:colorbar, :none) # disable colorbar for subsequent figures
 jim(:yflip, false) # have "y" axis increase upward
-jim(rand(9,7))
+jim(rand(9,7), "rand")
+jim(:pop!) # restore
