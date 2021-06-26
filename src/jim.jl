@@ -8,10 +8,11 @@ export jim
 
 using UnitfulRecipes
 using Plots: heatmap, plot, plot!, Plot
-import Plots
+import Plots # gui
 using MosaicViews: mosaicview
 using FFTViews: FFTView
 using OffsetArrays: OffsetMatrix
+import OffsetArrays # no_offset_view
 using AxisArrays: AxisArray, axisnames, axisvalues
 #using MIRTjim: prompt
 
