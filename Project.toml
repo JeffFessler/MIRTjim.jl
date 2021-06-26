@@ -1,9 +1,10 @@
 name = "MIRTjim"
 uuid = "170b2178-6dee-4cb0-8729-b3e8b57834cc"
 authors = ["Jeff Fessler <fessler@umich.edu> and contributors"]
-version = "0.10.0"
+version = "0.11.0"
 
 [deps]
+AxisArrays = "39de3d68-74b9-583c-8d2d-e117c070f3a9"
 FFTViews = "4f61f5a4-77b1-5117-aa51-3ab5ef4ef0cd"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 MosaicViews = "e94cdb99-869f-56ef-bcf0-1ae2bcbe0389"
@@ -13,6 +14,7 @@ REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 UnitfulRecipes = "42071c24-d89e-48dd-8a24-8a12d9b8861f"
 
 [compat]
+AxisArrays = "0.4"
 FFTViews = "0.3"
 LaTeXStrings = "1"
 MosaicViews = "0.3"

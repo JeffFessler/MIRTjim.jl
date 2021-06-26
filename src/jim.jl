@@ -8,10 +8,12 @@ export jim
 
 using UnitfulRecipes
 using Plots: heatmap, plot, plot!, Plot
-import Plots
+import Plots # gui
 using MosaicViews: mosaicview
 using FFTViews: FFTView
-using OffsetArrays
+using OffsetArrays: OffsetMatrix
+import OffsetArrays # no_offset_view
+using AxisArrays: AxisArray, axisnames, axisvalues
 #using MIRTjim: prompt
 
 
@@ -270,7 +272,7 @@ function jim(
 end
 
 
-# OffsetArrays
+# OffsetArray / OffsetMatrix
 # https://github.com/JuliaPlots/Plots.jl/issues/2410
 _axes(z,j) = axes(z,j).parent .+ axes(z,j).offset
 function jim(z::OffsetMatrix{<:Number} ;
@@ -291,6 +293,19 @@ function Plots.heatmap(x, y, z::OffsetMatrix{<:Number}; kwargs...)
     heatmap(x, y, OffsetArrays.no_offset_view(z); kwargs...)
 end
 =#
+
+
+# AxisArray / AxisMatrix
+const AxisMatrix{T} = AxisArray{T,2,D,Ax} where {T,D,Ax}
+function jim(z::AxisMatrix{<:Number} ;
+    x = axisvalues(z)[1],
+    y = axisvalues(z)[2],
+    xlabel = String(axisnames(z)[1]),
+    ylabel = String(axisnames(z)[2]),
+    kwargs...
+)
+    jim(parent(z) ; x, y, xlabel, ylabel, kwargs...)
+end
 
 
 """
