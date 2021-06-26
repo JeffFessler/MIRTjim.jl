@@ -2,13 +2,6 @@
 # # [Examples](@id 1-examples)
 #---------------------------------------------------------
 
-#md # [![](https://mybinder.org/badge_logo.svg)](@__BINDER_ROOT_URL__/notebooks/1-examples.ipynb)
-#md # [![](https://img.shields.io/badge/show-nbviewer-579ACA.svg)](@__NBVIEWER_ROOT_URL__/notebooks/1-examples.ipynb)
-
-#md # !!! note
-#md #     These examples are available as Jupyter notebooks.
-#md #     You can execute them online with [binder](https://mybinder.org/) or just view them with [nbviewer](https://nbviewer.jupyter.org/) by clicking on the badges above!
-
 # These examples illustrate how to use `MIRTjim`.
 
 # First we tell Julia we are using this package,
@@ -82,9 +75,23 @@ jim(x, y, zu, "units" ;
 # See `UnitfulRecipes.jl` to customize the units
 
 
+# ### AxisArrays
+
+# `jim` displays the axes (names and units) naturally by default:
+
+using AxisArrays
+using Unitful: μm, s
+
+x = (1:9)μm
+y = (1:7)μm/s
+za = AxisArray(x * y'; x=x, y=y)
+jim(za, "AxisArray")
+
+
 # ## Options
 
-# See the docstring for `jim` for the many options.  Here are some defaults.
+# See the docstring for `jim` for its many options.
+# Here are some defaults.
 
 jim(:defs)
 
@@ -94,5 +101,7 @@ jim(:defs)
 jim(:push!) # save current defaults
 jim(:colorbar, :none) # disable colorbar for subsequent figures
 jim(:yflip, false) # have "y" axis increase upward
-jim(rand(9,7), "rand")
+jim(rand(9,7), "rand", color=:viridis) # kwargs... passed to heatmap()
+
+#-
 jim(:pop!); # restore

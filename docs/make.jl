@@ -1,5 +1,3 @@
-# push!(LOAD_PATH,"../src/")
-
 using MIRTjim
 using Documenter
 using Literate
@@ -31,27 +29,32 @@ ismd(f) = splitext(f)[2] == ".md"
 pages(folder) =
     [joinpath(folder, f) for f in readdir(joinpath(src, folder)) if ismd(f)]
 
+isci = get(ENV, "CI", nothing) == "true"
+
+format = Documenter.HTML(;
+    prettyurls = isci,
+#   canonical = "https://JeffFessler.github.io/MIRTjim.jl/stable",
+#   assets = String[],
+)
 
 makedocs(;
     modules = [MIRTjim],
     authors = "Jeff Fessler and contributors",
     repo = "https://github.com/JeffFessler/MIRTjim.jl/blob/{commit}{path}#{line}",
     sitename = "MIRTjim.jl",
-    format = Documenter.HTML(;
-        prettyurls = get(ENV, "CI", "false") == "true",
-#       canonical = "https://JeffFessler.github.io/MIRTjim.jl/stable",
-#       assets = String[],
-    ),
+    format,
     pages = [
         "Home" => "index.md",
         "Examples" => pages("examples")
     ],
 )
 
-deploydocs(;
-    repo = "github.com/JeffFessler/MIRTjim.jl.git",
-    devbranch = "main",
-    devurl = "dev",
-    versions = ["stable" => "v^", "dev" => "dev"]
-#   push_preview = true,
-)
+if isci
+    deploydocs(;
+        repo = "github.com/JeffFessler/MIRTjim.jl.git",
+        devbranch = "main",
+        devurl = "dev",
+        versions = ["stable" => "v^", "dev" => "dev"]
+    #   push_preview = true,
+    )
+end
