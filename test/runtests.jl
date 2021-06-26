@@ -13,6 +13,7 @@ end
     @test isempty(detect_ambiguities(MIRTjim))
 end
 
+include("axis.jl")
 include("caller_name.jl")
 include("offset.jl")
 include("prompt.jl")
