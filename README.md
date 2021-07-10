@@ -75,6 +75,12 @@ by avoiding a dependence on `Plots.jl` there.
 
 Tested with Julia ≥ 1.6.
 
+
+### Related packages
+
+* https://github.com/JuliaImages/ImageView.jl
+
+
 <!-- URLs -->
 [action-img]: https://github.com/JeffFessler/MIRTjim.jl/workflows/CI/badge.svg
 [action-url]: https://github.com/JeffFessler/MIRTjim.jl/actions
