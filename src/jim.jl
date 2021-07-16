@@ -16,6 +16,8 @@ import OffsetArrays # no_offset_view
 using AxisArrays: AxisArray, axisnames, axisvalues
 #using MIRTjim: prompt
 
+const RealU = Number # Union{Real, Unitful.Length}
+
 
 # global default key/values
 const jim_table = Dict([
@@ -46,15 +48,15 @@ jim_def = deepcopy(jim_table)
 
 jim_stack = Any[] # for push! and pop!
 
-# exclude Inf, NaN:
-maxgood = z -> maximum(Iterators.filter(isfinite, z); init=-Inf*oneunit(z[1]))
-function mingood(z::AbstractArray{<:Number})
-   minimum(Iterators.filter(isfinite, z); init=Inf*oneunit(z[1]))
+# min,max of an iterable, excluding Inf, NaN
+# caution: complex Unitful arrays are <:Number not <:Complex
+function _maxgood(z::AbstractArray{T}) where {T <: Number}
+   maximum(Iterators.filter(isfinite, z); init=-Inf*oneunit(T))
 end
-function mingood(z::AbstractArray{<:Complex})
-   zf = Iterators.filter(isfinite, z)
-   minimum(Iterators.map(abs, zf); init=Inf*oneunit(abs(z[1])))
+function _mingood(z)
+   minimum(Iterators.filter(isfinite, z); init=Inf*oneunit(eltype(first(z))))
 end
+_mingood(z::AbstractArray{<:Complex}) = _mingood(Iterators.map(abs, z))
 
 
 """
@@ -127,9 +129,28 @@ out
 
 2019-02-23 Jeff Fessler, University of Michigan
 """
-function jim(z::AbstractMatrix{<:Number} ;
+function jim(
+    z::AbstractMatrix{<:Number} ;
+    abswarn::Bool = jim_def[:abswarn],
+    kwargs...,
+)
+
+    !any(isfinite, z) && throw("no finite values")
+
+    if all(z -> imag(z) == zero(real(z[1])), z)
+        z = real(z) # remove any zero imaginary part
+    else
+        abswarn && (@warn "magnitude at $(caller_name())")
+        z = abs.(z) # due to Unitful complex types not being <: Complex
+    end
+    return _jim(z ; kwargs...)
+end
+
+
+# 2D RealU matrix
+function _jim(z::AbstractMatrix{<:RealU} ;
     aspect_ratio = jim_def[:aspect_ratio],
-    clim = nothing_else(jim_def[:clim], (mingood(z), maxgood(z))),
+    clim = nothing_else(jim_def[:clim], (_mingood(z), _maxgood(z))),
     color = jim_def[:color],
     colorbar = jim_def[:colorbar],
     title::AbstractString = jim_def[:title],
@@ -145,13 +166,11 @@ function jim(z::AbstractMatrix{<:Number} ;
     ylabel::Union{Nothing,AbstractString} = _label(:ylabel, y),
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
     yreverse::Bool = nothing_else(jim_def[:yreverse], y[1] > y[end]),
-#   abswarn::Bool = jim_def[:abswarn], # ignored here
+#   abswarn::Bool = jim_def[:abswarn], # not used here
     infwarn::Bool = jim_def[:infwarn],
     nanwarn::Bool = jim_def[:nanwarn],
     kwargs...
 )
-
-    !any(isfinite, z) && throw("no finite values")
 
     # because some backends require y to be in ascending order
     if yreverse
@@ -167,9 +186,9 @@ function jim(z::AbstractMatrix{<:Number} ;
     infwarn && any(isinf, z) && @warn("$(sum(isinf, z)) ±Inf")
     nanwarn && any(isnan, z) && @warn("$(sum(isnan, z)) NaN")
 
-    if mingood(z) ≈ maxgood(z) # uniform or nearly uniform image
-        tmp = (mingood(z) == maxgood(z)) ? "Uniform $(z[1])" :
-            "Nearly uniform $((mingood(z),maxgood(z)))"
+    if _mingood(z) ≈ _maxgood(z) # uniform or nearly uniform image
+        tmp = (_mingood(z) == _maxgood(z)) ? "Uniform $(z[1])" :
+            "Nearly uniform $((_mingood(z),_maxgood(z)))"
         p = plot( ; aspect_ratio,
             xlim = (x[1], x[end]),
             ylim = (y[1], y[end]),
@@ -213,7 +232,7 @@ function jim(z::AbstractArray{<:Number} ;
     line3plot = jim_def[:line3plot],
     line3type = jim_def[:line3type],
     ncol::Int = jim_def[:ncol],
-    padval = nothing_else(jim_def[:padval], mingood(z)),
+    padval = nothing_else(jim_def[:padval], _mingood(z)),
     mosaic_npad::Int = jim_def[:mosaic_npad],
     fft0::Bool = jim_def[:fft0],
     x::AbstractVector{<:Number} = axes(z,1),
@@ -259,17 +278,6 @@ function jim(z::AbstractArray{<:Number} ;
 
 end # jim 3D
 
-
-# complex image data
-function jim(
-    z::AbstractMatrix{<:Complex} ;
-    abswarn::Bool = jim_def[:abswarn],
-    kwargs...
-)
-
-    abswarn && (@warn "magnitude at $(caller_name())")
-    jim(abs.(z) ; kwargs...)
-end
 
 
 # OffsetArray / OffsetMatrix

@@ -27,4 +27,15 @@ include("isplot.jl")
     p6 = jim(x, y, f; xlabel="x", ylabel="y", clim=(50,100).*u"mm*s")
     @isplot p6
     jim(p1, p2, p3, p4, p5, p6)
+
+    z = 2 .+ rand(5,5) + 4im * ones(5,5)
+    @test z isa AbstractMatrix{<:Complex}
+    zu = z * Unitful.m # complex array with units
+    @test !(zu isa AbstractMatrix{<:Complex}) # beware!
+    @test zu isa AbstractMatrix{<:Number}
+    @isplot jim(real(zu), "units") # colorbar roughly 2-3
+    @isplot jim(zu, "units") # colorbar roughly 4-5
+
+    z3u = (randn(3,4,5) + ones(3,4,5)) * Unitful.m # 3D, complex, units
+    @isplot jim(z3u)
 end
