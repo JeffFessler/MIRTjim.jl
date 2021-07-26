@@ -4,7 +4,7 @@
 
 # These examples illustrate how to use `MIRTjim`.
 
-# First we tell Julia we are using this package,
+# First we tell Julia we are using this package:
 
 using MIRTjim: jim, prompt
 
@@ -84,7 +84,7 @@ using Unitful: μm, s
 
 x = (1:9)μm
 y = (1:7)μm/s
-za = AxisArray(x * y'; x=x, y=y)
+za = AxisArray(x * y'; x, y)
 jim(za, "AxisArray")
 
 
@@ -96,7 +96,7 @@ jim(za, "AxisArray")
 jim(:defs)
 
 # One can set "global" defaults using appropriate keywords from above list.
-# Use `:push` and `pop:` for such changes to be temporary
+# Use `:push!` and `:pop!` for such changes to be temporary.
 
 jim(:push!) # save current defaults
 jim(:colorbar, :none) # disable colorbar for subsequent figures
