@@ -13,7 +13,7 @@ using MIRTjim: jim, prompt
 
 isinteractive() && jim(:prompt, true);
 
-# ### Simple 2D image
+# ## Simple 2D image
 
 
 # The simplest example is a 2D array.
@@ -40,7 +40,7 @@ isinteractive() && prompt();
 jim(z, "hello")
 
 
-# ### OffsetArrays
+# ## OffsetArrays
 
 # `jim` displays the axes naturally.
 
@@ -49,7 +49,7 @@ zo = OffsetArray(z, (-3,-1))
 jim(zo, "OffsetArray example")
 
 
-# ### 3D arrays
+# ## 3D arrays
 
 # `jim` automatically makes 3D arrays into a mosaic.
 
@@ -57,12 +57,10 @@ z3 = reshape(1:(9*7*6), (9, 7, 6))
 jim(z3, "3D")
 
 
-# ### Units
+# ## Units
 
 # `jim` supports units, with axis and colorbar units appended naturally,
 # thanks to UnitfulRecipes.jl.
-# (The ylabel may be not visible in the web Documentation
-# but does appear properly when run locally.)
 
 using Unitful
 
@@ -75,7 +73,7 @@ jim(x, y, zu, "units" ;
 # See `UnitfulRecipes.jl` to customize the units
 
 
-# ### AxisArrays
+# ## AxisArrays
 
 # `jim` displays the axes (names and units) naturally by default:
 
