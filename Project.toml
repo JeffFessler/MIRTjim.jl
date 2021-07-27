@@ -14,7 +14,7 @@ REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 UnitfulRecipes = "42071c24-d89e-48dd-8a24-8a12d9b8861f"
 
 [compat]
-AxisArrays = "0.4"
+AxisArrays = "0.4.4"
 FFTViews = "0.3"
 LaTeXStrings = "1"
 MosaicViews = "0.3"

@@ -50,8 +50,7 @@ end
 """
     function wait_for_key( ; io_in = stdin, io_out = stdout, prompt=?)
 
-From:
-https://discourse.julialang.org/t/wait-for-a-keypress/20218
+From [discourse](https://discourse.julialang.org/t/wait-for-a-keypress/20218).
 """
 function wait_for_key( ;
     io_in::IO = stdin,
@@ -83,7 +82,7 @@ Set prompt state to one of:
 
 Use `prompt(:state)` to query current state.
 
-Actually it calls `display(plot!())` instead of `gui()`
+Actually it calls `display(plot!())` instead of `gui()`.
 """
 function prompt(key::Symbol)
     global prompt_state

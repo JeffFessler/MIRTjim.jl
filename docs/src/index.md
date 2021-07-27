@@ -11,21 +11,17 @@ CurrentModule = MIRTjim
 
 ## Overview
 
-Most results from the Michigan Image Reconstruction Toolbox
-[(MIRT)](https://github.com/JeffFessler/MIRT.jl)
-are images that one will want to display.
-
 This module exports a function `jim`
 (jiffy image display)
 for convenient display of a grayscale image.
 
-## Index
+This function was originally designed
+for the Michigan Image Reconstruction Toolbox
+[(MIRT)](https://github.com/JeffFessler/MIRT.jl)
+where most results
+are images that one will want to display.
 
-```@index
-```
-
-## Functions
-
-```@autodocs
-Modules = [MIRTjim]
-```
+Also exported is the `prompt` function that
+(by default)
+pauses for a user to press a key before continuing,
+which is useful in scripts.

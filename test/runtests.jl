@@ -3,6 +3,8 @@
 using Test: @test, @testset, detect_ambiguities
 using MIRTjim
 
+ENV["GKSwstype"] = "100"
+
 macro isplot(ex) # @isplot macro to streamline tests
     :(@test $(esc(ex)) isa Plots.Plot)
 end

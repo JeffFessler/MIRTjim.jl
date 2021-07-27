@@ -1,6 +1,6 @@
 """
-    `MIRTjim` exports the "jiffy image display" `jim`
-for the Michigan Image Reconstruction Toolbox (MIRT)
+Module `MIRTjim` exports the "jiffy image display" method `jim`,
+and the two helper methods `caller_name` and `prompt`.
 """
 module MIRTjim
 

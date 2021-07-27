@@ -61,7 +61,7 @@ _mingood(z::AbstractArray{<:Complex}) = _mingood(Iterators.map(abs, z))
 
 """
     nothing_else(x, y)
-return `y` if `x` is nothing, else return `x`
+Return `y` if `x` is nothing, else return `x`.
 """
 function nothing_else(x, y)
     return x == nothing ? y : x
@@ -96,7 +96,7 @@ _fft0_axis(n::Int) = (-n÷2):(n÷2 - iseven(n))
 """
     jim(z, ...)
 
-A jiffy image display of `z` using `heatmap`
+A jiffy image display of `z` using `heatmap`.
 
 in
 - `z` image, can be 2D or higher, if higher then it uses `mosaicviews`
@@ -126,8 +126,6 @@ option
 
 out
 - returns plot handle, type `Plots.Plot`
-
-2019-02-23 Jeff Fessler, University of Michigan
 """
 function jim(
     z::AbstractMatrix{<:Number} ;
@@ -343,7 +341,7 @@ jim(x::AbstractVector, y, z, title::AbstractString ; kwargs...) =
 
 """
     jim(key::Symbol, value::Any)
-set default value for one of the keys
+Set default value for one of the keys.
 """
 function jim(key::Symbol, value)
     global jim_def
@@ -354,7 +352,7 @@ end
 
 """
     jim(plot1, plot2, ... ; kwargs...)
-Subplot-type layout
+Subplot-type layout, where `kwargs` are passed to `plot`.
 """
 function jim(p::Plot, args... ; kwargs...)
     plot(p, args... ; kwargs...)
@@ -364,19 +362,19 @@ end
 """
     jim(:test::Symbol)
 
-`jim(:keys)` return default keys
+`jim(:keys)` return default keys.
 
-`jim(:defs)` return `Dict` of default keys / vals
+`jim(:defs)` return `Dict` of default keys / vals.
 
-`jim(:key)` return `Dict[key]` if possible
+`jim(:key)` return `Dict[key]` if possible.
 
-`jim(:reset)` reset to defaults
+`jim(:reset)` reset to defaults.
 
-`jim(:push!)` `push!` current defaults to the stack
+`jim(:push!)` `push!` current defaults to the stack.
 
-`jim(:pop!)` `pop!` defaults from the stack
+`jim(:pop!)` `pop!` defaults from the stack.
 
-`jim(:blank)` return blank plot
+`jim(:blank)` return blank plot.
 """
 function jim(test::Symbol)
     global jim_def

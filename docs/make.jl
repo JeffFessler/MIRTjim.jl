@@ -5,6 +5,9 @@ using Literate
 # based on:
 # https://github.com/jw3126/UnitfulRecipes.jl/blob/master/docs/make.jl
 
+# https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@example-block
+ENV["GKSwstype"] = "100"
+
 # generate tutorials and how-to guides using Literate
 lit = joinpath(@__DIR__, "lit")
 src = joinpath(@__DIR__, "src")
@@ -33,6 +36,7 @@ isci = get(ENV, "CI", nothing) == "true"
 
 format = Documenter.HTML(;
     prettyurls = isci,
+    edit_link = "main",
 #   canonical = "https://JeffFessler.github.io/MIRTjim.jl/stable",
 #   assets = String[],
 )
@@ -40,11 +44,11 @@ format = Documenter.HTML(;
 makedocs(;
     modules = [MIRTjim],
     authors = "Jeff Fessler and contributors",
-    repo = "https://github.com/JeffFessler/MIRTjim.jl/blob/{commit}{path}#{line}",
     sitename = "MIRTjim.jl",
     format,
     pages = [
         "Home" => "index.md",
+        "Methods" => "methods.md",
         "Examples" => pages("examples")
     ],
 )
@@ -54,7 +58,11 @@ if isci
         repo = "github.com/JeffFessler/MIRTjim.jl.git",
         devbranch = "main",
         devurl = "dev",
-        versions = ["stable" => "v^", "dev" => "dev"]
+        versions = ["stable" => "v^", "dev" => "dev"],
+        forcepush = true,
     #   push_preview = true,
+        # see https://JeffFessler.github.io/MIRTjim.jl/previews/PR##
     )
+else
+    @warn "may need to: rm -r src/examples"
 end
