@@ -105,3 +105,8 @@ jim(rand(9,7), "rand", color=:viridis) # kwargs... passed to heatmap()
 
 #-
 jim(:pop!); # restore
+
+
+# Just for debugging:
+using Pkg
+Pkg.status("MIRTjim")
