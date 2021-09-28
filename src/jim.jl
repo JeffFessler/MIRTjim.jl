@@ -351,11 +351,20 @@ end
 
 
 """
-    jim(plot1, plot2, ... ; kwargs...)
+    jim(plot1, plot2, ... ; gui=?, prompt=?, kwargs...)
 Subplot-type layout, where `kwargs` are passed to `plot`.
+- `gui` call `Plots.gui()` immediately?; default `false`
+- `prompt` call `prompt()` immediately?; default `false`
 """
-function jim(p::Plot, args... ; kwargs...)
-    plot(p, args... ; kwargs...)
+function jim(p::Plot, args... ;
+    gui::Bool = jim_def[:gui],
+    prompt::Bool = jim_def[:prompt],
+    kwargs...,
+)
+    out = plot(p, args... ; kwargs...)
+    gui && Plots.gui()
+    prompt && MIRTjim.prompt()
+    return out
 end
 
 
