@@ -187,6 +187,7 @@ function _jim(z::AbstractMatrix{<:RealU} ;
     if _mingood(z) ≈ _maxgood(z) # uniform or nearly uniform image
         tmp = (_mingood(z) == _maxgood(z)) ? "Uniform $(z[1])" :
             "Nearly uniform $((_mingood(z),_maxgood(z)))"
+
         p = plot( ; aspect_ratio,
             xlim = (x[1], x[end]),
             ylim = (y[1], y[end]),
@@ -199,22 +200,24 @@ function _jim(z::AbstractMatrix{<:RealU} ;
             annotate = (x[(end+1)÷2], y[(end+1)÷2], tmp, :red),
             kwargs...
         )
-    end
 
-    p = heatmap(xy..., z' ;
-        transpose = false,
-        aspect_ratio,
-        clim,
-        color,
-        colorbar,
-        title,
-        yflip,
-        xlabel,
-        ylabel,
-        xticks,
-        yticks,
-        kwargs...
-    )
+    else
+
+        p = heatmap(xy..., z' ;
+            transpose = false,
+            aspect_ratio,
+            clim,
+            color,
+            colorbar,
+            title,
+            yflip,
+            xlabel,
+            ylabel,
+            xticks,
+            yticks,
+            kwargs...
+        )
+    end
 
     gui && Plots.gui()
     prompt && MIRTjim.prompt()
