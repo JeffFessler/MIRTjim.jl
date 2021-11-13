@@ -187,6 +187,7 @@ function _jim(z::AbstractMatrix{<:RealU} ;
     if _mingood(z) ≈ _maxgood(z) # uniform or nearly uniform image
         tmp = (_mingood(z) == _maxgood(z)) ? "Uniform $(z[1])" :
             "Nearly uniform $((_mingood(z),_maxgood(z)))"
+
         p = plot( ; aspect_ratio,
             xlim = (x[1], x[end]),
             ylim = (y[1], y[end]),
@@ -199,22 +200,24 @@ function _jim(z::AbstractMatrix{<:RealU} ;
             annotate = (x[(end+1)÷2], y[(end+1)÷2], tmp, :red),
             kwargs...
         )
-    end
 
-    p = heatmap(xy..., z' ;
-        transpose = false,
-        aspect_ratio,
-        clim,
-        color,
-        colorbar,
-        title,
-        yflip,
-        xlabel,
-        ylabel,
-        xticks,
-        yticks,
-        kwargs...
-    )
+    else
+
+        p = heatmap(xy..., z' ;
+            transpose = false,
+            aspect_ratio,
+            clim,
+            color,
+            colorbar,
+            title,
+            yflip,
+            xlabel,
+            ylabel,
+            xticks,
+            yticks,
+            kwargs...
+        )
+    end
 
     gui && Plots.gui()
     prompt && MIRTjim.prompt()
@@ -238,6 +241,7 @@ function jim(z::AbstractArray{<:Number} ;
     xy::Tuple = (),
     xticks = _ticks(x),
     yticks = _ticks(y),
+    yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
     kwargs...
 )
 
@@ -245,12 +249,17 @@ function jim(z::AbstractArray{<:Number} ;
         ncol = floor(Int, sqrt(prod(size(z)[3:end])))
     end
 
+    if !yflip
+        z = reverse(z, dims=2)
+        yflip = !yflip
+    end
+
     n1,n2,n3 = size(z,1), size(z,2), size(z,3)
     z = mosaicview(z ; fillvalue = padval, ncol, npad = mosaic_npad)
     fft0 && @warn("fft0 option ignored for 3D")
 
     xy = () # no x,y for mosaic
-    p = jim(z ; transpose = false, xy, xticks, yticks,
+    p = jim(z ; transpose = false, xy, xticks, yticks, yflip,
         gui=false, prompt=false, kwargs...)
 
     if n3 > 1 && line3plot # lines around each subimage
