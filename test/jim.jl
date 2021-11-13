@@ -18,7 +18,7 @@ include("isplot.jl")
 @test_throws String jim(:bad)
 
 @isplot jim(ones(4,3), title="test2", xlabel=L"x")
-@isplot jim(rand(4,3,5), title=L"test3 x^2_i")
+@isplot jim(rand(4,3,5), yflip=false, title=L"test3 x^2_i")
 @isplot jim(1:4, 5:9, zeros(4,5), title="test3", ylabel=L"y")
 @isplot jim(1:4, 5:9, zeros(4,5), "test3")
 @isplot jim(zeros(4,5), x=1:4, y=5:9, title="test3")
