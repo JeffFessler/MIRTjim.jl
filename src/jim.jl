@@ -238,6 +238,7 @@ function jim(z::AbstractArray{<:Number} ;
     xy::Tuple = (),
     xticks = _ticks(x),
     yticks = _ticks(y),
+    yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
     kwargs...
 )
 
@@ -245,12 +246,17 @@ function jim(z::AbstractArray{<:Number} ;
         ncol = floor(Int, sqrt(prod(size(z)[3:end])))
     end
 
+    if !yflip
+        z = reverse(z, dims=2)
+        yflip = !yflip
+    end
+
     n1,n2,n3 = size(z,1), size(z,2), size(z,3)
     z = mosaicview(z ; fillvalue = padval, ncol, npad = mosaic_npad)
     fft0 && @warn("fft0 option ignored for 3D")
 
     xy = () # no x,y for mosaic
-    p = jim(z ; transpose = false, xy, xticks, yticks,
+    p = jim(z ; transpose = false, xy, xticks, yticks, yflip,
         gui=false, prompt=false, kwargs...)
 
     if n3 > 1 && line3plot # lines around each subimage
