@@ -28,13 +28,14 @@ size(i2)
 # This is a typical convention in "image processing" of digital images
 # that lack any physical coordinates for their axes.
 
+ji = (args...; kwargs...) -> jim(args...; kwargs..., prompt=false)
 jim(
-    jim( i1, "2D default"),
-    jim( i1, yflip=false, "2D yflip=false"),
-    jim( i1, yflip=true, "2D yflip=true"),
-    jim( i2, ncol=2, "3D default"),
-    jim( i2, ncol=2, yflip=false, "3D yflip=false"),
-    jim( i2, ncol=2, yflip=true, "3D yflip=true"),
+    ji( i1, "2D default"),
+    ji( i1, yflip=false, "2D yflip=false"),
+    ji( i1, yflip=true, "2D yflip=true"),
+    ji( i2, ncol=2, "3D default"),
+    ji( i2, ncol=2, yflip=false, "3D yflip=false"),
+    ji( i2, ncol=2, yflip=true, "3D yflip=true"),
 )
 
 
@@ -45,19 +46,20 @@ jim(
 # This convention is more common in physics-based imaging and inverse problems
 # where the image axes have meaningful values (and often have units).
 
-objects = shepp_logan(SheppLoganEmis(); fovs=(100,100))
-ig = ImageGeom(dims=(100,128), deltas=(1,1))
+objects = shepp_logan(SheppLoganEmis(); fovs=(120,120))
+ig = ImageGeom(dims=(50,64), deltas=(2,2), offsets=(0.5,0.5))
 xy = axes(ig)
 i3 = phantom(xy..., objects)
 i4 = cat(dims=3, i3, 2i3, 3i3) # 3D stack of images
 
 jim(
-    jim(xy..., i3, "2D default", xlabel="x", ylabel="y"),
-    jim(xy..., i3, yflip=false, "2D yflip=false"),
-    jim(xy..., i3, yflip=true, "2D yflip=true"),
-    jim(xy..., i4, ncol=2, "3D default"),
-    jim(xy..., i4, ncol=2, yflip=false, "3D yflip=false"),
-    jim(xy..., i4, ncol=2, yflip=true, "3D yflip=true"),
+    ji(xy..., i3, "2D default", xlabel="x", ylabel="y"),
+    ji(xy..., i3, yflip=false, "2D yflip=false"),
+    ji(xy..., i3, yflip=true, "2D yflip=true"),
+    ji(xy..., i4, ncol=2, "3D default"),
+    ji(xy..., i4, ncol=2, yflip=false, "3D yflip=false"),
+    ji(xy..., i4, ncol=2, yflip=true, "3D yflip=true"),
+    prompt = false,
 )
 
 # In both cases the "default" option for `yflip`
