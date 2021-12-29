@@ -57,6 +57,15 @@ z3 = reshape(1:(9*7*6), (9, 7, 6))
 jim(z3, "3D")
 
 
+# ## Arrays of images
+
+# `jim` automatically makes arrays of images into a mosaic.
+
+z3 = reshape(1:(9*7*6), (9, 7, 6))
+z4 = [z3[:,:,(j-1)*3+i] for i=1:3, j=1:2]
+jim(z4, "Arrays of images")
+
+
 # ## Units
 
 # `jim` supports units, with axis and colorbar units appended naturally,
