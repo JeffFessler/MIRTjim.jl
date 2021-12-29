@@ -10,7 +10,8 @@ https://github.com/JeffFessler/MIRTjim.jl
 [![docs-dev][docs-dev-img]][docs-dev-url]
 [![code-style][code-blue-img]][code-blue-url]
 
-This repo exports the function `jim` that is a "jiffy image display" function
+This Julia language repo
+exports the `jim` method that provides a "jiffy image display"
 for showing 2D grayscale images
 (and 3D grayscale images as a mosaic).
 It is basically a wrapper around `Plots.heatmap`
@@ -32,7 +33,7 @@ Pkg.add("MIRTjim")
 ## Example
 
 ```julia
-using MIRTjim
+using MIRTjim: jim
 z = (1:7) .+ (1:4)' # 7 × 4 matrix
 jim(z ; title="example") # figure
 ```
