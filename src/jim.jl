@@ -16,7 +16,6 @@ import OffsetArrays # no_offset_view
 using AxisArrays: AxisArray, axisnames, axisvalues
 #using MIRTjim: prompt
 
-const RealU = Number # Union{Real, Unitful.Length}
 
 
 # global default key/values
@@ -58,6 +57,7 @@ function _mingood(z)
    minimum(Iterators.filter(isfinite, z); init=Inf*oneunit(eltype(first(z))))
 end
 _mingood(z::AbstractArray{<:Complex}) = _mingood(Iterators.map(abs, z))
+_mingood(z::AbstractArray{<:AbstractArray}) = minimum(_mingood, z)
 
 
 """
@@ -361,7 +361,7 @@ end
 """
     jim(z, title::String ; kwargs...)
 """
-jim(z::AbstractArray{<:Number}, title::AbstractString ; kwargs...) =
+jim(z::AbstractArray, title::AbstractString ; kwargs...) =
     jim(z ; title, kwargs...)
 
 
