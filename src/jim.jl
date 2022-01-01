@@ -50,13 +50,18 @@ jim_stack = Any[] # for push! and pop!
 
 # min,max of an iterable, excluding Inf, NaN
 # caution: complex Unitful arrays are <:Number not <:Complex
-function _maxgood(z::AbstractArray{T}) where {T <: Number}
-   maximum(Iterators.filter(isfinite, z); init=-Inf*oneunit(T))
+function _dogood(z, fun::Function, init::Real)
+    T = eltype(first(z))
+    z = Iterators.filter(isfinite, z)
+    z = Iterators.map(x -> x / oneunit(T), z)
+    if first(z) isa Complex
+        z = Iterators.map(abs, z)
+    end
+    return fun(z; init) * oneunit(real(T))
 end
-function _mingood(z)
-   minimum(Iterators.filter(isfinite, z); init=Inf*oneunit(eltype(first(z))))
-end
-_mingood(z::AbstractArray{<:Complex}) = _mingood(Iterators.map(abs, z))
+_maxgood(z::AbstractArray{<:Number}) = _dogood(z, maximum, -Inf)
+_maxgood(z::AbstractArray{<:AbstractArray}) = maximum(_maxgood, z)
+_mingood(z::AbstractArray{<:Number}) = _dogood(z, minimum, Inf)
 _mingood(z::AbstractArray{<:AbstractArray}) = minimum(_mingood, z)
 
 
