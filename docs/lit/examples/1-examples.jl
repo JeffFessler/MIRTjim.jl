@@ -2,23 +2,50 @@
 # # [Examples](@id 1-examples)
 #---------------------------------------------------------
 
-# These examples illustrate how to use `MIRTjim`.
+#=
+This page illustrates the Julia package
+[`MIRTjim`](https://github.com/JeffFessler/MIRTjim.jl).
 
-# First we tell Julia we are using this package:
+This page was generated from a single Julia file:
+[1-example.jl](@__REPO_ROOT_URL__/1-example.jl).
+=#
+
+#md # In any such Julia documentation,
+#md # you can access the source code
+#md # using the "Edit on GitHub" link in the top right.
+
+#md # The corresponding notebook can be viewed in
+#md # [nbviewer](http://nbviewer.jupyter.org/) here:
+#md # [`1-examples.ipynb`](@__NBVIEWER_ROOT_URL__/1-examples.ipynb),
+#md # and opened in [binder](https://mybinder.org/) here:
+#md # [`1-examples.ipynb`](@__BINDER_ROOT_URL__/1-examples.ipynb).
+
+
+# ### Setup
+
+# Packages needed here.
 
 using MIRTjim: jim, prompt
+using AxisArrays: AxisArray
+using OffsetArrays: OffsetArray
+using Unitful
+import Plots
+using InteractiveUtils: versioninfo
 
-# The following line is helpful when running this example.jl file as a script;
-# this way it will prompt user to hit a key after each image is displayed.
 
-isinteractive() && jim(:prompt, true);
+# The following line is helpful when running this file as a script;
+# this way it will prompt user to hit a key after each figure is displayed.
+
+isinteractive() ? jim(:prompt, true) : prompt(:draw);
 
 # ## Simple 2D image
 
 
-# The simplest example is a 2D array.
-# Note that `jim` is designed to show a function `f(x,y)`
-# sampled as an array `z[x,y]` so the 1st index is horizontal direction.
+#=
+The simplest example is a 2D array.
+Note that `jim` is designed to show a function `f(x,y)`
+sampled as an array `z[x,y]` so the 1st index is horizontal direction.
+=#
 
 x, y = 1:9, 1:7
 f(x,y) = x * (y-4)^2
@@ -29,7 +56,6 @@ jim(z ; xlabel="x", ylabel="y", title="f(x,y) = x * (y-4)^2")
 # Compare with `Plots.heatmap` to see the differences
 # (transpose, color, wrong aspect ratio, distractingly many ticks):
 
-import Plots
 Plots.heatmap(z, title="heatmap")
 
 #-
@@ -44,7 +70,6 @@ jim(z, "hello")
 
 # `jim` displays the axes naturally.
 
-using OffsetArrays
 zo = OffsetArray(z, (-3,-1))
 jim(zo, "OffsetArray example")
 
@@ -71,8 +96,6 @@ jim(z4, "Arrays of images")
 # `jim` supports units, with axis and colorbar units appended naturally,
 # thanks to UnitfulRecipes.jl.
 
-using Unitful
-
 x = (1:9)u"m/s"
 y = (1:7)u"s"
 zu = x * y'
@@ -86,7 +109,6 @@ jim(x, y, zu, "units" ;
 
 # `jim` displays the axes (names and units) naturally by default:
 
-using AxisArrays
 using Unitful: μm, s
 
 x = (1:9)μm
@@ -127,6 +149,15 @@ p3 = jim(rand(9,7), title="plot 3")
 jim(p1, p2, p3; layout=(1,3), gui=true)
 
 
-# Just for debugging:
-using Pkg
-Pkg.status("MIRTjim")
+# ### Reproducibility
+
+# This page was generated with the following version of Julia:
+
+io = IOBuffer()
+versioninfo(io)
+split(String(take!(io)), '\n')
+
+
+# And with the following package versions
+
+import Pkg; Pkg.status()
