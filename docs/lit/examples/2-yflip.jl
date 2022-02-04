@@ -1,8 +1,9 @@
 #---------------------------------------------------------
-# # [Option yflip](@id 2-yflip)
+# # [Option `yflip`](@id 2-yflip)
 #---------------------------------------------------------
 
-# Examples illustrating the `yflip` option in the Julia package
+#=
+Examples illustrating the `yflip` option in the Julia package
 [`MIRTjim`](https://github.com/JeffFessler/MIRTjim.jl).
 
 This page was generated from a single Julia file:
