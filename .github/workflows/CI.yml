@@ -1,6 +1,11 @@
 name: CI
+
 on:
+  create:
+    tags:
   push:
+    branches:
+      - main
     paths-ignore:
       - '**.md'
       - 'docs/**'
@@ -16,9 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version:
-          - '1.6'
-          - 'nightly'
+        version: ['1.6', '1', 'nightly']
         os:
           - ubuntu-latest
           - windows-latest

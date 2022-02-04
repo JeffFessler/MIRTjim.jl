@@ -11,7 +11,7 @@ CurrentModule = MIRTjim
 
 ## Overview
 
-This module exports a function `jim`
+This Julia module exports a function `jim`
 (jiffy image display)
 for convenient display of a grayscale image.
 
@@ -25,3 +25,5 @@ Also exported is the `prompt` function that
 (by default)
 pauses for a user to press a key before continuing,
 which is useful in scripts.
+
+See the "Examples" for details.
