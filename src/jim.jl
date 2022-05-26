@@ -17,6 +17,13 @@ using AxisArrays: AxisArray, axisnames, axisvalues
 #using MIRTjim: prompt
 
 
+"""
+    _aspect_ratio(x, y)
+Use default `aspect_ratio` of `:equal` from `jim_def[:aspect_ratio]`
+iff `Δx == Δy` (square pixels), otherwise revert to `:auto`.
+"""
+_aspect_ratio(x, y) = (x[2]-x[1]) == (y[2]-y[1]) ? jim_def[:aspect_ratio] : :auto
+
 
 # global default key/values
 const jim_table = Dict([
@@ -108,7 +115,7 @@ in
 - `z` image, can be 2D or higher, if higher then it uses `mosaicviews`
 
 option
-- `aspect_ratio`; default `:equal`
+- `aspect_ratio`; default `:equal` for square pixels (see `_aspect_ratio`)
 - `clim`; default `(minimum(z),maximum(z))`
 - `color` (colormap, e.g. `:hsv`); default `:grays`
 - `colorbar` (e.g. `:none`); default `:legend`
@@ -155,7 +162,6 @@ end
 
 # 2D RealU matrix
 function _jim(z::AbstractMatrix{<:RealU} ;
-    aspect_ratio = jim_def[:aspect_ratio],
     clim = nothing_else(jim_def[:clim], (_mingood(z), _maxgood(z))),
     color = jim_def[:color],
     colorbar = jim_def[:colorbar],
@@ -165,9 +171,12 @@ function _jim(z::AbstractMatrix{<:RealU} ;
     prompt::Bool = jim_def[:prompt],
     x::AbstractVector{<:Number} = fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
     y::AbstractVector{<:Number} = fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
+    aspect_ratio = _aspect_ratio(x, y),
     xy::Tuple = (x,y),
     xticks = _ticks(x),
     yticks = _ticks(y),
+    xlims = (min(x[1], xticks[1]), max(x[end], xticks[end])),
+    ylims = (min(y[1], yticks[1]), max(y[end], yticks[end])),
     xlabel::Union{Nothing,AbstractString} = _label(:xlabel, x),
     ylabel::Union{Nothing,AbstractString} = _label(:ylabel, y),
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
@@ -197,8 +206,8 @@ function _jim(z::AbstractMatrix{<:RealU} ;
             "Nearly uniform $((_mingood(z),_maxgood(z)))"
 
         p = plot( ; aspect_ratio,
-            xlim = (x[1], x[end]),
-            ylim = (y[1], y[end]),
+            xlims,
+            ylims,
             title,
             yflip,
             xlabel,
@@ -221,6 +230,8 @@ function _jim(z::AbstractMatrix{<:RealU} ;
             yflip,
             xlabel,
             ylabel,
+            xlims,
+            ylims,
             xticks,
             yticks,
             kwargs...

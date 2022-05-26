@@ -58,7 +58,8 @@ function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
         yflip = !yflip
     end
 
-    zz = mosaic(vec(z) ; fillvalue = padval, ncol, nrow, npad = mosaic_npad)
+    zz = mosaic(vec(z) ; fillvalue = padval, npad = mosaic_npad,
+        ncol=nrow, nrow=ncol) # because mosaic uses opposite convention
     fft0 && @warn("fft0 option ignored for 3D")
 
     # adjusted x,y for mosaic
