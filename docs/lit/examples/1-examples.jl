@@ -82,6 +82,15 @@ z3 = reshape(1:(9*7*6), (9, 7, 6))
 jim(z3, "3D")
 
 
+# One can specify how many images per row or column for such a mosaic.
+
+x11 = reshape(1:(5*6*11), (5, 6, 11))
+jim(x11, "nrow=3"; nrow=3)
+
+#
+jim(x11, "ncol=6"; ncol=6)
+
+
 # ## Arrays of images
 
 # `jim` automatically makes arrays of images into a mosaic.
@@ -96,13 +105,14 @@ jim(z4, "Arrays of images")
 # `jim` supports units, with axis and colorbar units appended naturally,
 # thanks to UnitfulRecipes.jl.
 
-x = (1:9)u"m/s"
+x = 0.1*(1:9)u"m/s"
 y = (1:7)u"s"
 zu = x * y'
 jim(x, y, zu, "units" ;
-    clim=(0,40).*u"m", xlabel="rate", ylabel="time", colorbar_title="distance")
+    clim=(0,7).*u"m", xlabel="rate", ylabel="time", colorbar_title="distance")
 
-# See `UnitfulRecipes.jl` to customize the units
+# Note that `aspect_ratio` reverts to `:auto` when axis units differ.
+# See `UnitfulRecipes.jl` to customize the units.
 
 
 # ## AxisArrays
