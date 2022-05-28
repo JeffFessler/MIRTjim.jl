@@ -14,6 +14,8 @@ using MosaicViews: mosaic
 
 Display an array of images.
 Same arguments and options as display of a 3D stack of images.
+The argument `ratio` defaults to `/(Plots.default(:size)...)`
+and affects the default `ncol` value.
 """
 function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
     gui::Bool = jim_def[:gui],
@@ -31,6 +33,8 @@ function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
     xticks = _ticks(x),
     yticks = _ticks(y),
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
+    # typical plot window ratio is 600/400, but let caller over-ride it:
+    ratio::Real = /(Plots.default(:size)...),
     kwargs...
 )
 
@@ -41,10 +45,8 @@ function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
     n3 = length(z) * prod(size(z[1])[3:end])
     n1,n2 = size(z[1])[1:2]
     if ncol == 0 && nrow == 0
-        nrow = n3 * n1 / n2 # wider images means fewer columns
-        nrow *= 600/400 # typical plot aspect ratio
-        nrow = max(floor(Int, sqrt(nrow)), 1)
-        ncol = ceil(Int, n3 / nrow)
+        ncol = ratio * n3 * n1 / n2 # wider images means fewer columns
+        ncol = max(floor(Int, sqrt(ncol)), 1)
     end
     if ncol == 0
         ncol = ceil(Int, n3 / nrow)
@@ -96,7 +98,7 @@ function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
                 line = jim_def[:line3type], label="",
             )
         end
-        for ii=0:n3-1 # boxes around data only
+        for ii in 0:n3-1 # boxes around data only
             i1 = mod(ii, m1)
             i2 = ii ÷ m1
             plot_box!(i1*n1, i2*n2)
