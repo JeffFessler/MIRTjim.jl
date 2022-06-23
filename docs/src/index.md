@@ -11,13 +11,17 @@ CurrentModule = MIRTjim
 
 ## Overview
 
-This Julia module exports a function `jim`
+This Julia module
+[MIRTjim.jl](https://github.com/JeffFessler/MIRTjim.jl)
+exports a function `jim`
 (jiffy image display)
 for convenient display of a grayscale image.
 
 This function was originally designed
 for the Michigan Image Reconstruction Toolbox
 [(MIRT)](https://github.com/JeffFessler/MIRT.jl)
+and for
+[JuliaImageRecon](https://github.com/JuliaImageRecon),
 where most results
 are images that one will want to display.
 

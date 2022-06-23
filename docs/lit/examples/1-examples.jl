@@ -7,7 +7,7 @@ This page illustrates the Julia package
 [`MIRTjim`](https://github.com/JeffFessler/MIRTjim.jl).
 
 This page was generated from a single Julia file:
-[1-example.jl](@__REPO_ROOT_URL__/1-example.jl).
+[1-examples.jl](@__REPO_ROOT_URL__/1-examples.jl).
 =#
 
 #md # In any such Julia documentation,
@@ -163,9 +163,7 @@ jim(p1, p2, p3; layout=(1,3), gui=true)
 
 # This page was generated with the following version of Julia:
 
-io = IOBuffer()
-versioninfo(io)
-split(String(take!(io)), '\n')
+io = IOBuffer(); versioninfo(io); split(String(take!(io)), '\n')
 
 
 # And with the following package versions

@@ -82,7 +82,7 @@ end
 
 
 # parsimonious axis ticks by default
-function _ticks(x::AbstractVector{<:Number})
+function _ticks(x::AbstractVector{<:RealU})
     if x[1] isa Real
         minfloor = x -> floor(minimum(x), digits = jim_def[:tickdigit])
         maxceil = x -> ceil(maximum(x), digits = jim_def[:tickdigit])
@@ -169,14 +169,16 @@ function _jim(z::AbstractMatrix{<:RealU} ;
     fft0::Bool = jim_def[:fft0],
     gui::Bool = jim_def[:gui],
     prompt::Bool = jim_def[:prompt],
-    x::AbstractVector{<:Number} = fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
-    y::AbstractVector{<:Number} = fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
+    x::AbstractVector{<:RealU} = fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
+    y::AbstractVector{<:RealU} = fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
     aspect_ratio = _aspect_ratio(x, y),
     xy::Tuple = (x,y),
     xticks = _ticks(x),
     yticks = _ticks(y),
-    xlims = (min(x[1], xticks[1]), max(x[end], xticks[end])),
-    ylims = (min(y[1], yticks[1]), max(y[end], yticks[end])),
+    dx::RealU = x[2] - x[1],
+    dy::RealU = y[2] - y[1],
+    xlims = (min(x[1]-dx/2, xticks[1]), max(x[end]+dx/2, xticks[end])),
+    ylims = (min(y[1]-dy/2, yticks[1]), max(y[end]+dy/2, yticks[end])),
     xlabel::Union{Nothing,AbstractString} = _label(:xlabel, x),
     ylabel::Union{Nothing,AbstractString} = _label(:ylabel, y),
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
@@ -234,6 +236,7 @@ function _jim(z::AbstractMatrix{<:RealU} ;
             ylims,
             xticks,
             yticks,
+# todo widen=true,
             kwargs...
         )
     end
@@ -255,6 +258,7 @@ function jim(z::OffsetMatrix{<:Number} ;
 )
     jim(OffsetArrays.no_offset_view(z) ; x, y, kwargs...)
 end
+
 #=
 This approach fails because z' is no longer an OffsetMatrix
 function Plots.heatmap(z::OffsetMatrix{<:Number}; kwargs...)
@@ -293,7 +297,7 @@ jim(z::AbstractArray, title::AbstractString ; kwargs...) =
 
 The `x` and `y` axes can be Unitful thanks to UnitfulRecipes.
 """
-jim(x::AbstractVector{<:Number}, y::AbstractVector{<:Number}, z ; kwargs...) =
+jim(x::AbstractVector{<:RealU}, y::AbstractVector{<:RealU}, z ; kwargs...) =
     jim(z ; x, y, kwargs...)
 
 

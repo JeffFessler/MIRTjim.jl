@@ -63,12 +63,17 @@ to return the file name and line number that called the current function.
 It can be helpful for debugging and for giving warnings some context.
 
 
+### Notes
+
+This method is used in many of the image reconstruction examples in
+https://github.com/JuliaImageRecon.
+
 Isolating these functions in this repo,
-separate from the primary repo
-for the
+separate from other repos like
+the
 [Michigan Image Reconstruction Toolbox (MIRT)](https://github.com/JeffFessler/MIRT.jl)
 keeps
-`MIRT.jl` lighter
+those repos lighter
 by avoiding a dependence on `Plots.jl` there.
 
 
