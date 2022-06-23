@@ -45,8 +45,16 @@ function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
     n3 = length(z) * prod(size(z[1])[3:end])
     n1,n2 = size(z[1])[1:2]
     if ncol == 0 && nrow == 0
-        ncol = ratio * n3 * n1 / n2 # wider images means fewer columns
-        ncol = max(floor(Int, sqrt(ncol)), 1)
+        ncol = sqrt(ratio * n3 * n2 / n1) # wider images means fewer columns
+        ncol = max(floor(Int, ncol), 1)
+
+        # prefer ±1 if that will make it fit nicely
+        if ncol > 1 && n3 / (ncol-1) ≈ round(Int, n3 / (ncol-1)) # (n1,n2,64)
+            ncol -= 1
+        end
+        if n3 / (ncol+1) ≈ round(Int, n3 / (ncol+1)) # (n1,n2,12)
+            ncol += 1
+        end
     end
     if ncol == 0
         ncol = ceil(Int, n3 / nrow)
