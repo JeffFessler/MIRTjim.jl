@@ -72,17 +72,17 @@ where the image axes have meaningful values (and often have units).
 
 objects = shepp_logan(SheppLoganEmis(); fovs=(120,120))
 ig = ImageGeom(dims=(50,64), deltas=(2,2), offsets=(0.5,0.5))
-xy = axes(ig)
-i3 = phantom(xy..., objects)
+ax = axes(ig)
+i3 = phantom(ax..., objects)
 i4 = cat(dims=3, i3, 2i3, 3i3) # 3D stack of images
 
 jim(
-    ji(xy..., i3, "2D default", xlabel="x", ylabel="y"),
-    ji(xy..., i3, yflip=false, "2D yflip=false"),
-    ji(xy..., i3, yflip=true, "2D yflip=true"),
-    ji(xy..., i4, ncol=2, "3D default"),
-    ji(xy..., i4, ncol=2, yflip=false, "3D yflip=false"),
-    ji(xy..., i4, ncol=2, yflip=true, "3D yflip=true"),
+    ji(ax, i3, "2D default", xlabel="x", ylabel="y"),
+    ji(ax, i3, yflip=false, "2D yflip=false"),
+    ji(ax, i3, yflip=true, "2D yflip=true"),
+    ji(ax..., i4, ncol=2, "3D default"),
+    ji(ax..., i4, ncol=2, yflip=false, "3D yflip=false"),
+    ji(ax..., i4, ncol=2, yflip=true, "3D yflip=true"),
     prompt = false,
 )
 
@@ -97,9 +97,7 @@ but one can modify the default to achieve other behaviors.
 
 # This page was generated with the following version of Julia:
 
-io = IOBuffer()
-versioninfo(io)
-split(String(take!(io)), '\n')
+io = IOBuffer(); versioninfo(io); split(String(take!(io)), '\n')
 
 
 # And with the following package versions

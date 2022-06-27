@@ -30,7 +30,6 @@ function jim(
     fft0::Bool = jim_def[:fft0],
     x::AbstractVector{<:Number} = axes(z[1],1),
     y::AbstractVector{<:Number} = axes(z[1],2),
-#   xy::Tuple = (),
     xticks = _ticks(x),
     yticks = _ticks(y),
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
@@ -87,7 +86,6 @@ function jim(
         zyflip = true
         y = reverse(y)
     end
-#   xy = (x,y)
 
     p = jim(zz ; x, y, xticks, yticks, yflip,
             gui=false, prompt=false, kwargs...,
