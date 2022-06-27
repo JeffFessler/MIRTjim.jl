@@ -1,6 +1,7 @@
 # jim.jl test
 
 using MIRTjim: jim
+import MIRTjim # jim_stack
 using LaTeXStrings
 using Test: @test, @test_throws
 
@@ -9,14 +10,16 @@ include("isplot.jl")
 @test jim(:keys) isa Vector{Symbol}
 @test jim(:clim) isa Nothing
 @test jim(:defs) isa AbstractDict
+@test_throws String jim(:bad)
 
+# settings stack
 @test MIRTjim.jim_stack isa Vector{Any}
-@test jim(:push!) isa Vector{Any}
+jim(:reset)
+@test jim(:push!)[1] isa Dict{Symbol,Any}
 @test jim(:pop!) == jim(:reset)
 @test MIRTjim.jim_stack isa Vector{Any}
 
-@test_throws String jim(:bad)
-
+# basic plots
 @isplot jim(ones(4,3), title="test2", xlabel=L"x")
 @isplot jim(1:4, 5:9, zeros(4,5), title="test3", ylabel=L"y")
 @isplot jim(1:4, 5:9, zeros(4,5), "test3")
@@ -31,12 +34,14 @@ include("isplot.jl")
 @isplot jim(rand(4,3,5), ncol=2)
 @isplot jim(rand(4,3,5), nrow=3)
 @isplot jim(-3:2, -2:1, rand(6,4,4)) # zyflip
+@isplot jim(1:3, 1:4, 1:5, zeros(3,4,5), "test")
 
 jim(:abswarn, false)
 @isplot jim(rand(ComplexF32, 4,3))
 @isplot jim(rand(ComplexF32, 4,3), "complex 2d")
 @isplot jim(rand(ComplexF32, 4,3,5), "complex 3d")
 jim(:abswarn, true)
+
 @isplot jim(rand(4,5), color=:hsv)
 @isplot jim(jim(rand(2,3)), jim(rand(3,2)) ; layout=(2,1))
 @isplot jim(:blank)

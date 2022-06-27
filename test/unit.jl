@@ -1,6 +1,7 @@
 # unit.jl
 
 using Unitful
+using Unitful: mm, s
 using MIRTjim: jim
 using Test: @test, @testset, @inferred
 
@@ -38,4 +39,19 @@ include("isplot.jl")
 
     z3u = (randn(3,4,5) + ones(3,4,5)) * Unitful.m # 3D, complex, units
     @isplot jim(z3u)
+end
+
+
+@testset "3d units" begin
+    x = (2:8) * 1mm
+    y = (3:7) * 1s
+    z = (4:9)
+    dims = tuple([size(a)[1] for a in (x,y,z)]...)
+    f = rand(dims...) * 1mm / 1s
+    @isplot jim(f)
+    @isplot jim(x, y, f)
+    @isplot jim(x, y, z, f)
+    array3 = [f[:,:,iz] for iz in 1:length(z)]
+    @isplot jim(x, y, array3)
+    @isplot jim(x, y, z, array3)
 end

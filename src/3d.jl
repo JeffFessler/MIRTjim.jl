@@ -4,8 +4,43 @@ export jim
 
 
 # 3D (or higher), built on array version
-function jim(z::AbstractArray{T} ; kwargs...) where {T <: Number}
+function jim(z::AbstractArray{<:Number} ; kwargs...)
     zz = reshape(z, size(z,1), size(z,2), :)
     out = [@view zz[:,:,i] for i in 1:size(zz,3)]
-    jim(out ; kwargs...)
+    return jim(out ; kwargs...)
 end
+
+
+"""
+    jim(x, y, z, array3d, [title] ; kwargs...)
+Allow user to provide
+the "z axis" of a 3D array,
+but ignore it without warning.
+"""
+function jim(
+    x::AbstractVector{<:RealU},
+    y::AbstractVector{<:RealU},
+    z::AbstractVector{<:RealU}, # ignored!
+    f::AbstractArray ; # could be 3D array or Vector of 2D arrays
+    kwargs...,
+)
+    return jim(f ; x, y, kwargs...)
+end
+
+jim(x::AbstractVector{<:RealU}, y, z, f, title::String; kwargs...) =
+    jim(x, y, z, f; title, kwargs...)
+
+
+# axes tuples
+
+"""
+    jim(axes::Tuple, array, [title] ; kwargs...)
+Allow user to provide the `axes` of `array`.
+(Only `x = axes[1]` and `y = axes[2]` are used.)
+"""
+function jim(ax::Tuple, f; kwargs...)
+   length(ax) == ndims(f) || throw("axes dimension mismatch")
+   jim(f; x = ax[1], y = ax[2], kwargs...)
+end
+
+jim(ax::Tuple, f, title::String; kwargs...) = jim(ax, f; title, kwargs...)

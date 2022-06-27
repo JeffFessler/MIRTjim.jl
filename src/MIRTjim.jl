@@ -9,6 +9,7 @@ module MIRTjim
     include("jim.jl")
     include("3d.jl")
     include("array.jl")
+    include("mid3.jl")
     include("caller_name.jl")
     include("prompt.jl")
 

@@ -1,7 +1,7 @@
 # axis.jl
 
 using MIRTjim: jim
-using AxisArrays
+using AxisArrays: AxisArray
 using Unitful: μm
 using Test: @testset
 
