@@ -34,12 +34,14 @@ jim(:reset)
 @isplot jim(rand(4,3,5), ncol=2)
 @isplot jim(rand(4,3,5), nrow=3)
 @isplot jim(-3:2, -2:1, rand(6,4,4)) # zyflip
+@isplot jim(1:3, 1:4, 1:5, zeros(3,4,5), "test")
 
 jim(:abswarn, false)
 @isplot jim(rand(ComplexF32, 4,3))
 @isplot jim(rand(ComplexF32, 4,3), "complex 2d")
 @isplot jim(rand(ComplexF32, 4,3,5), "complex 3d")
 jim(:abswarn, true)
+
 @isplot jim(rand(4,5), color=:hsv)
 @isplot jim(jim(rand(2,3)), jim(rand(3,2)) ; layout=(2,1))
 @isplot jim(:blank)
