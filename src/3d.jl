@@ -29,3 +29,18 @@ end
 
 jim(x::AbstractVector{<:RealU}, y, z, f, title::String; kwargs...) =
     jim(x, y, z, f; title, kwargs...)
+
+
+# axes tuples
+
+"""
+    jim(axes::Tuple, array, [title] ; kwargs...)
+Allow user to provide the `axes` of `array`.
+(Only `x = axes[1]` and `y = axes[2]` are used.)
+"""
+function jim(ax::Tuple, f; kwargs...)
+   length(ax) == ndims(f) || throw("axes dimension mismatch")
+   jim(f; x = ax[1], y = ax[2], kwargs...)
+end
+
+jim(ax::Tuple, f, title::String; kwargs...) = jim(ax, f; title, kwargs...)

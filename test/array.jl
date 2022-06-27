@@ -18,3 +18,7 @@ z = [ones(6,4), rand(6,4), rand(6,4), rand(6,4), rand(6,4)]
 z = [reshape(1:12,3,4), ones(4,5)]
 @test MIRTjim._maxgood(z) == 12
 @test MIRTjim._mingood(z) == 1
+
+# axes
+z = ones(2,3,4)
+@isplot jim(axes(z), z, "axes")

@@ -128,6 +128,12 @@ f3d = rand(8, 6, 4) # * s^2
 jim(x, y, z, f3d, "3D with axis units")
 
 
+# One can use a tuple for the `axes` instead;
+# only the `x` and `y` axes are used.
+
+jim((x, y, z), f3d, "axes tuple")
+
+
 # ## AxisArrays
 
 # `jim` displays the axes (names and units) naturally by default:
