@@ -51,9 +51,21 @@ const jim_table = Dict([
  :nanwarn => isinteractive(), # warn when image has NaN?
 ])
 
+
+"""
+    jim_def
+Global `Dict` of default settings.
+"""
 jim_def = deepcopy(jim_table)
 
+
+"""
+    jim_stack
+Global `Vector{Any}` used with `:push!` and `:pop!`
+to store and retrieve settings.
+"""
 jim_stack = Any[] # for push! and pop!
+
 
 # min,max of an iterable, excluding Inf, NaN
 # caution: complex Unitful arrays are <:Number not <:Complex
@@ -169,10 +181,13 @@ function _jim(z::AbstractMatrix{<:RealU} ;
     fft0::Bool = jim_def[:fft0],
     gui::Bool = jim_def[:gui],
     prompt::Bool = jim_def[:prompt],
-    x::AbstractVector{<:RealU} = fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
-    y::AbstractVector{<:RealU} = fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
+    xy::Tuple = (
+        fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
+        fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
+    ),
+    x::AbstractVector{<:RealU} = xy[1],
+    y::AbstractVector{<:RealU} = xy[2],
     aspect_ratio = _aspect_ratio(x, y),
-    xy::Tuple = (x,y),
     xticks = _ticks(x),
     yticks = _ticks(y),
     dx::RealU = x[2] - x[1],
@@ -297,8 +312,14 @@ jim(z::AbstractArray, title::AbstractString ; kwargs...) =
 
 The `x` and `y` axes can be Unitful thanks to UnitfulRecipes.
 """
-jim(x::AbstractVector{<:RealU}, y::AbstractVector{<:RealU}, z ; kwargs...) =
-    jim(z ; x, y, kwargs...)
+function jim(
+    x::AbstractVector{<:RealU},
+    y::AbstractVector{<:RealU},
+    z ;
+    kwargs...,
+)
+    return jim(z ; x, y, kwargs...)
+end
 
 
 """
@@ -306,8 +327,15 @@ jim(x::AbstractVector{<:RealU}, y::AbstractVector{<:RealU}, z ; kwargs...) =
 
 Allow `title` as positional argument for convenience.
 """
-jim(x::AbstractVector, y, z, title::AbstractString ; kwargs...) =
-    jim(x, y, z ; title, kwargs...)
+function jim(
+    x::AbstractVector{<:RealU},
+    y::AbstractVector{<:RealU},
+    z,
+    title::AbstractString ;
+    kwargs...,
+)
+    return jim(x, y, z ; title, kwargs...)
+end
 
 
 """
