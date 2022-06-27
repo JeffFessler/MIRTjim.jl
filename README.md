@@ -45,7 +45,7 @@ see the
 
 ### Helper functions
 
-This repo also exports two small helper functions.
+This repo also exports some small helper functions.
 
 * `prompt()` first calls `Plots.gui()`
 to display the current plot,
@@ -61,6 +61,10 @@ then waits for a user key press.
 * `caller_name()` uses `stacktrace` (in `Base`)
 to return the file name and line number that called the current function.
 It can be helpful for debugging and for giving warnings some context.
+
+* `mid3()` extracts the middle three slices
+(transaxial, coronal, sagittal) of a 3D array
+and arranges them in a 2D mosaic for quick display.
 
 
 ### Notes
