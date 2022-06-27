@@ -12,7 +12,7 @@ end
 
 
 """
-    jim(x, y, z, array3d ; kwargs...)
+    jim(x, y, z, array3d, [title] ; kwargs...)
 Allow user to provide
 the "z axis" of a 3D array,
 but ignore it without warning.
@@ -26,3 +26,6 @@ function jim(
 )
     return jim(f ; x, y, kwargs...)
 end
+
+jim(x::AbstractVector{<:RealU}, y, z, f, title::String; kwargs...) =
+    jim(x, y, z, f; title, kwargs...)
