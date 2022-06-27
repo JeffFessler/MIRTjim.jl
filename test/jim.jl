@@ -1,6 +1,7 @@
 # jim.jl test
 
 using MIRTjim: jim
+import MIRTjim # jim_stack
 using LaTeXStrings
 using Test: @test, @test_throws
 
@@ -9,14 +10,16 @@ include("isplot.jl")
 @test jim(:keys) isa Vector{Symbol}
 @test jim(:clim) isa Nothing
 @test jim(:defs) isa AbstractDict
+@test_throws String jim(:bad)
 
+# settings stack
 @test MIRTjim.jim_stack isa Vector{Any}
-@test jim(:push!) isa Vector{Any}
+jim(:reset)
+@test jim(:push!)[1] isa Dict{Symbol,Any}
 @test jim(:pop!) == jim(:reset)
 @test MIRTjim.jim_stack isa Vector{Any}
 
-@test_throws String jim(:bad)
-
+# basic plots
 @isplot jim(ones(4,3), title="test2", xlabel=L"x")
 @isplot jim(1:4, 5:9, zeros(4,5), title="test3", ylabel=L"y")
 @isplot jim(1:4, 5:9, zeros(4,5), "test3")
