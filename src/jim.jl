@@ -181,12 +181,11 @@ function _jim(z::AbstractMatrix{<:RealU} ;
     fft0::Bool = jim_def[:fft0],
     gui::Bool = jim_def[:gui],
     prompt::Bool = jim_def[:prompt],
-    xy::Tuple = (
-        fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
-        fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
-    ),
-    x::AbstractVector{<:RealU} = xy[1],
-    y::AbstractVector{<:RealU} = xy[2],
+#   xy::Tuple = (),
+#   x::AbstractVector{<:RealU} = xy[1],
+#   y::AbstractVector{<:RealU} = xy[2],
+    x::AbstractVector{<:RealU} = fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
+    y::AbstractVector{<:RealU} = fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
     aspect_ratio = _aspect_ratio(x, y),
     xticks = _ticks(x),
     yticks = _ticks(y),
@@ -237,7 +236,7 @@ function _jim(z::AbstractMatrix{<:RealU} ;
 
     else
 
-        p = heatmap(xy..., z' ;
+        p = heatmap(x, y, z' ;
             transpose = false,
             aspect_ratio,
             clim,
@@ -251,7 +250,6 @@ function _jim(z::AbstractMatrix{<:RealU} ;
             ylims,
             xticks,
             yticks,
-# todo widen=true,
             kwargs...
         )
     end
