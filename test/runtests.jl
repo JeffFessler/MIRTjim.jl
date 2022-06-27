@@ -20,6 +20,7 @@ include("caller_name.jl")
 include("offset.jl")
 include("prompt.jl")
 include("unit.jl")
+include("mid3.jl")
 
 @testset "array" begin
     include("array.jl")

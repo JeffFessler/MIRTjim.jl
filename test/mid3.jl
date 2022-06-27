@@ -7,4 +7,8 @@ using Test: @test, @testset, @inferred
     f = reshape(1:24, (2,3,4))
     g = @inferred mid3(f)
     @test g isa Matrix{Int64}
+
+    f = rand(2,3,4)
+    g = @inferred mid3(f)
+    @test g isa Matrix{Float64}
 end

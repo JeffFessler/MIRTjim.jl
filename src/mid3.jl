@@ -2,7 +2,8 @@
 
 export mid3
 
-_average(x::AbstractArray{T}) where T = round(T, sum(x) / length(x))
+_average(x::AbstractArray{T}) where {T <: Integer} = round(T, sum(x) / length(x))
+_average(x::AbstractArray{<:Number}) = sum(x) / length(x)
 
 """
     mid3(a::AbstractArray{T,3})
