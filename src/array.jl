@@ -17,7 +17,8 @@ Same arguments and options as display of a 3D stack of images.
 The argument `ratio` defaults to `/(Plots.default(:size)...)`
 and affects the default `ncol` value.
 """
-function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
+function jim(
+    z::AbstractArray{<:AbstractArray{<:Number}} ;
     gui::Bool = jim_def[:gui],
     prompt::Bool = jim_def[:prompt],
     line3plot = jim_def[:line3plot],
@@ -29,7 +30,7 @@ function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
     fft0::Bool = jim_def[:fft0],
     x::AbstractVector{<:Number} = axes(z[1],1),
     y::AbstractVector{<:Number} = axes(z[1],2),
-    xy::Tuple = (),
+#   xy::Tuple = (),
     xticks = _ticks(x),
     yticks = _ticks(y),
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
@@ -38,8 +39,8 @@ function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
     kwargs...
 )
 
-    all(x -> size(x) == size(z[1]), z) || throw("size mismatch")
-    all(x -> axes(x) == axes(z[1]), z) || throw("axes mismatch")
+    all(s -> (size(s) == size(z[1])), z) || throw("size mismatch")
+    all(s -> (axes(s) == axes(z[1])), z) || throw("axes mismatch")
 
     # determine mosaic layout
     n3 = length(z) * prod(size(z[1])[3:end])
@@ -49,11 +50,13 @@ function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
         ncol = max(floor(Int, ncol), 1)
 
         # prefer ±1 if that will make it fit nicely
-        if ncol > 1 && n3 / (ncol-1) ≈ round(Int, n3 / (ncol-1)) # (n1,n2,64)
-            ncol -= 1
-        end
-        if n3 / (ncol+1) ≈ round(Int, n3 / (ncol+1)) # (n1,n2,12)
-            ncol += 1
+        if !(n3 / ncol ≈ round(Int, n3 / ncol))
+            if ncol > 1 && n3 / (ncol-1) ≈ round(Int, n3 / (ncol-1)) # (n1,n2,64)
+                ncol -= 1
+            end
+            if n3 / (ncol+1) ≈ round(Int, n3 / (ncol+1)) # (n1,n2,12)
+                ncol += 1
+            end
         end
     end
     if ncol == 0
@@ -84,10 +87,11 @@ function jim(z::AbstractArray{<:AbstractArray{<:Number}} ;
         zyflip = true
         y = reverse(y)
     end
-    xy = (x,y)
+#   xy = (x,y)
 
-    p = jim(zz ; transpose = false, xy, xticks, yticks, yflip,
-        gui=false, prompt=false, kwargs...)
+    p = jim(zz ; x, y, xticks, yticks, yflip,
+            gui=false, prompt=false, kwargs...,
+        )
 
     if n3 > 1 && line3plot # lines around each subimage
         n1 += mosaic_npad
