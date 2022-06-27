@@ -29,6 +29,7 @@ using MIRTjim: jim, prompt
 using AxisArrays: AxisArray
 using OffsetArrays: OffsetArray
 using Unitful
+using Unitful: μm, s
 import Plots
 using InteractiveUtils: versioninfo
 
@@ -78,8 +79,8 @@ jim(zo, "OffsetArray example")
 
 # `jim` automatically makes 3D arrays into a mosaic.
 
-z3 = reshape(1:(9*7*6), (9, 7, 6))
-jim(z3, "3D")
+f3 = reshape(1:(9*7*6), (9, 7, 6))
+jim(f3, "3D")
 
 
 # One can specify how many images per row or column for such a mosaic.
@@ -95,7 +96,7 @@ jim(x11, "ncol=6"; ncol=6)
 
 # `jim` automatically makes arrays of images into a mosaic.
 
-z3 = reshape(1:(9*7*6), (9, 7, 6))
+z3 = reshape(1:(9*7*6), (7, 9, 6))
 z4 = [z3[:,:,(j-1)*3+i] for i=1:3, j=1:2]
 jim(z4, "Arrays of images")
 
@@ -115,11 +116,21 @@ jim(x, y, zu, "units" ;
 # See `UnitfulRecipes.jl` to customize the units.
 
 
+#=
+Units are also supported for 3D arrays,
+but the z-axis is ignored for plotting.
+=#
+
+x = (2:9) * 1μm
+y = (3:8) * 1/s
+z = (4:7) * 1μm * 1s
+f3d = rand(8, 6, 4) # * s^2
+jim(x, y, z, f3d, "3D with axis units")
+
+
 # ## AxisArrays
 
 # `jim` displays the axes (names and units) naturally by default:
-
-using Unitful: μm, s
 
 x = (1:9)μm
 y = (1:7)μm/s
