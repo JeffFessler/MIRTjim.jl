@@ -116,7 +116,8 @@ jim(x, y, zu, "units" ;
 # See `UnitfulRecipes.jl` to customize the units.
 
 
-# Image spacing is appropriate even for non-square pixels, due to units.
+# Image spacing is appropriate even for non-square pixels
+# if Δx and Δy have matching units.
 
 x = LinRange(-2,2,201) * 1u"m"
 y = LinRange(-1.2,1.2,150) * 1u"m" # Δy ≢ Δx
