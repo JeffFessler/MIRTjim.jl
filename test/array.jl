@@ -12,8 +12,9 @@ z = [ones(6,4), rand(6,4), rand(6,4), rand(6,4), rand(6,4)]
 @isplot jim(z, nrow=3)
 @isplot jim(-3:2, -2:1, z) # zyflip
 
-@isplot jim(zeros(5,5,64)) # ncol-1
-@isplot jim(zeros(5,5,18)) # ncol+1
+@isplot jim(zeros(5,5,16)) # ncol-1
+@isplot jim(zeros(5,5,10)) # ncol+1
+@isplot jim(zeros(5,5,64)) # ncol-2
 
 z = [reshape(1:12,3,4), ones(4,5)]
 @test MIRTjim._maxgood(z) == 12
