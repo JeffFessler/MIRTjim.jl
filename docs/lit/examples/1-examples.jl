@@ -116,6 +116,14 @@ jim(x, y, zu, "units" ;
 # See `UnitfulRecipes.jl` to customize the units.
 
 
+# Image spacing is appropriate even for non-square pixels, due to units.
+
+x = LinRange(-2,2,201) * 1u"m"
+y = LinRange(-1.2,1.2,150) * 1u"m" # Δy ≢ Δx
+z = @. sqrt(x^2 + (y')^2) ≤ 1u"m"
+jim(x, y, z, "Axis units with unequal spacing"; color=:cividis)
+
+
 #=
 Units are also supported for 3D arrays,
 but the z-axis is ignored for plotting.
