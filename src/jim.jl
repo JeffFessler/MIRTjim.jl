@@ -50,7 +50,7 @@ end
 
 # global default key/values
 const jim_table = Dict([
- :aspect_ratio => :equal,
+ :aspect_ratio => :infer,
  :clim => nothing,
  :color => :grays,
  :colorbar => :legend,
