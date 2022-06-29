@@ -17,17 +17,40 @@ using AxisArrays: AxisArray, axisnames, axisvalues
 #using MIRTjim: prompt
 
 
+_units_same(x::Real, y::Real) = false
+_units_same(x::Number, y::Number) = oneunit(x) == oneunit(y)
+
+
 """
     _aspect_ratio(x, y)
-Use default `aspect_ratio` of `:equal` from `jim_def[:aspect_ratio]`
-iff `Δx == Δy` (square pixels), otherwise revert to `:auto`.
+Determine `aspect_ratio` argument for `heatmap.`
+
+The user can set the default by invoking (e.g.) `jim(:aspect_ratio, :equal)`.
+
+Otherwise, the default from `jim_def[:aspect_ratio]` is `:infer`,
+which will lead to `:equal`
+if `x` and `y` have the same units,
+or if `Δx == Δy` (square pixels).
+Otherwise revert to `:auto`.
 """
-_aspect_ratio(x, y) = (x[2]-x[1]) == (y[2]-y[1]) ? jim_def[:aspect_ratio] : :auto
+function _aspect_ratio(x, y)
+    # defer to user if they have over-ridden the `:infer` default:
+    (jim_def[:aspect_ratio] != :infer) && return jim_def[:aspect_ratio]
+
+    # if x and y have units that are the same, then use `:equal`
+    _units_same(x[1], y[1]) && return :equal
+
+    # if `Δx == Δy` (square pixels), then use `:equal`.
+    ((x[2]-x[1]) == (y[2]-y[1])) && return :equal
+
+    # otherwise revert to `:auto`
+    return :auto
+end
 
 
 # global default key/values
 const jim_table = Dict([
- :aspect_ratio => :equal,
+ :aspect_ratio => :infer,
  :clim => nothing,
  :color => :grays,
  :colorbar => :legend,

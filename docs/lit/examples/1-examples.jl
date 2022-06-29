@@ -116,6 +116,15 @@ jim(x, y, zu, "units" ;
 # See `UnitfulRecipes.jl` to customize the units.
 
 
+# Image spacing is appropriate even for non-square pixels
+# if Δx and Δy have matching units.
+
+x = LinRange(-2,2,201) * 1u"m"
+y = LinRange(-1.2,1.2,150) * 1u"m" # Δy ≢ Δx
+z = @. sqrt(x^2 + (y')^2) ≤ 1u"m"
+jim(x, y, z, "Axis units with unequal spacing"; color=:cividis)
+
+
 #=
 Units are also supported for 3D arrays,
 but the z-axis is ignored for plotting.
@@ -170,9 +179,9 @@ jim(:pop!); # restore
 # even when other code follows.
 # Often it is used with the `prompt=true` option (not shown here).
 
-p1 = jim(rand(5,7))
-p2 = jim(rand(6,8), color=:viridis)
-p3 = jim(rand(9,7), title="plot 3")
+p1 = jim(rand(5,7); prompt=false)
+p2 = jim(rand(6,8); color=:viridis, prompt=false)
+p3 = jim(rand(9,7); title="plot 3", prompt=false)
 jim(p1, p2, p3; layout=(1,3), gui=true)
 
 

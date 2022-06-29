@@ -9,6 +9,15 @@ using MosaicViews: mosaic
 #using MIRTjim: prompt
 
 
+# helper
+function _ratio(ncol, n1, n2, n3, dx::Real, dy::Real)
+    nrow = ceil(Int, n3 / ncol)
+    return (ncol * n1 * dx) / (nrow * n2 * dy)
+end
+_ratio(ncol, n1, n2, n3, dx::Number, dy::Number) = # units
+    _ratio(ncol, n1, n2, n3, dx / oneunit(dx), dy / oneunit(dy))
+
+
 """
     jim(z::AbstractArray{<:AbstractArray{<:Number}} ; kwargs...)
 
@@ -45,18 +54,33 @@ function jim(
     n3 = length(z) * prod(size(z[1])[3:end])
     n1,n2 = size(z[1])[1:2]
     if ncol == 0 && nrow == 0
-        ncol = sqrt(ratio * n3 * n2 / n1) # wider images means fewer columns
-        ncol = max(floor(Int, ncol), 1)
+#=
+        if round(sqrt(n3))^2 == n3
+            ncol = round(Int, sqrt(n3))
+        end
+=#
+        dx = x[2] - x[1]
+        dy = y[2] - y[1]
+        ncol = argmin(ncol -> abs(ratio - _ratio(ncol, n1, n2, n3, dx, dy)), 1:n3)
+#       ncol = sqrt(ratio * n3 * n2 / n1) # wider images means fewer columns
+#       ncol = max(floor(Int, ncol), 1)
+        ncol = max(round(Int, ncol), 1)
 
         # prefer ±1 if that will make it fit nicely
         if !(n3 / ncol ≈ round(Int, n3 / ncol))
-            if ncol > 1 && n3 / (ncol-1) ≈ round(Int, n3 / (ncol-1)) # (n1,n2,64)
+            if ncol > 1 && n3 / (ncol-1) ≈ round(Int, n3 / (ncol-1)) # (n1,n2,16)
                 ncol -= 1
             end
-            if n3 / (ncol+1) ≈ round(Int, n3 / (ncol+1)) # (n1,n2,12)
+            if n3 / (ncol+1) ≈ round(Int, n3 / (ncol+1)) # (n1,n2,10)
                 ncol += 1
             end
         end
+        if !(n3 / ncol ≈ round(Int, n3 / ncol)) # even try -2
+            if ncol > 1 && n3 / (ncol-2) ≈ round(Int, n3 / (ncol-2)) # (n1,n2,64)
+                ncol -= 2
+            end
+        end
+
     end
     if ncol == 0
         ncol = ceil(Int, n3 / nrow)
