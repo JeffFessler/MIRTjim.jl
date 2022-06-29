@@ -178,9 +178,9 @@ jim(:pop!); # restore
 # even when other code follows.
 # Often it is used with the `prompt=true` option (not shown here).
 
-p1 = jim(rand(5,7))
-p2 = jim(rand(6,8), color=:viridis)
-p3 = jim(rand(9,7), title="plot 3")
+p1 = jim(rand(5,7); prompt=false)
+p2 = jim(rand(6,8); color=:viridis, prompt=false)
+p3 = jim(rand(9,7); title="plot 3", prompt=false)
 jim(p1, p2, p3; layout=(1,3), gui=true)
 
 
