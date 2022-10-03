@@ -6,7 +6,6 @@ jiffy image display
 
 export jim
 
-using UnitfulRecipes
 using Plots: heatmap, plot, plot!, Plot
 import Plots # gui
 using MosaicViews: mosaicview
@@ -233,6 +232,7 @@ function _jim(z::AbstractMatrix{<:RealU} ;
         z = FFTView(z)[x,y]
     end
 
+    length.((x,y)) == size(z) || throw("x,y size mismatch")
     # warnings for non-number values
     infwarn && any(isinf, z) && @warn("$(sum(isinf, z)) ±Inf")
     nanwarn && any(isnan, z) && @warn("$(sum(isnan, z)) NaN")
@@ -256,9 +256,9 @@ function _jim(z::AbstractMatrix{<:RealU} ;
 
     else
 
+#@show aspect_ratio size(z) x y length(x) length(y)
         p = heatmap(x, y, z' ;
             transpose = false,
-            aspect_ratio,
             clim,
             color,
             colorbar,
@@ -270,6 +270,7 @@ function _jim(z::AbstractMatrix{<:RealU} ;
             ylims,
             xticks,
             yticks,
+            aspect_ratio,
             kwargs...
         )
     end
@@ -328,7 +329,7 @@ jim(z::AbstractArray, title::AbstractString ; kwargs...) =
 """
     jim(x, y, z ; kwargs...)
 
-The `x` and `y` axes can be Unitful thanks to UnitfulRecipes.
+The `x` and `y` axes can be Unitful.
 """
 function jim(
     x::AbstractVector{<:RealU},

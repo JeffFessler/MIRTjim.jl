@@ -2,7 +2,6 @@
 
 export jim
 
-using UnitfulRecipes
 using Plots: plot!
 import Plots # gui
 using MosaicViews: mosaic
@@ -44,6 +43,7 @@ function jim(
     yflip::Bool = nothing_else(jim_def[:yflip], minimum(y) >= zero(y[1])),
     # typical plot window ratio is 600/400, but let caller over-ride it:
     ratio::Real = /(Plots.default(:size)...),
+    aspect_ratio = _aspect_ratio(x, y),
     kwargs...
 )
 
@@ -112,7 +112,7 @@ function jim(
     end
 
     p = jim(zz ; x, y, xticks, yticks, yflip,
-            gui=false, prompt=false, kwargs...,
+            gui=false, prompt=false, aspect_ratio, kwargs...,
         )
 
     if n3 > 1 && line3plot # lines around each subimage
@@ -139,7 +139,7 @@ function jim(
         end
     end
 
-    plot!()
+    plot!( ; aspect_ratio) # work-around for Plots issue 4416
     gui && Plots.gui()
     prompt && MIRTjim.prompt()
     return p
