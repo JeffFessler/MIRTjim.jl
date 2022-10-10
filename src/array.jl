@@ -139,7 +139,7 @@ function jim(
         end
     end
 
-    plot!( ; aspect_ratio) # work-around for Plots issue 4416
+    plot!()
     gui && Plots.gui()
     prompt && MIRTjim.prompt()
     return p
