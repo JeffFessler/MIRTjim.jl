@@ -52,12 +52,12 @@ that lack any physical coordinates for their axes.
 
 ji = (args...; kwargs...) -> jim(args...; kwargs..., prompt=false)
 jim(
-    ji( i1, "2D default"),
-    ji( i1, yflip=false, "2D yflip=false"),
-    ji( i1, yflip=true, "2D yflip=true"),
-    ji( i2, ncol=2, "3D default"),
-    ji( i2, ncol=2, yflip=false, "3D yflip=false"),
-    ji( i2, ncol=2, yflip=true, "3D yflip=true"),
+    ji(i1, "2D default"),
+    ji(i1, yflip=false, "2D yflip=false"),
+    ji(i1, yflip=true, "2D yflip=true"),
+    ji(i2, ncol=2, "3D default"),
+    ji(i2, ncol=2, yflip=false, "3D yflip=false"),
+    ji(i2, ncol=2, yflip=true, "3D yflip=true"),
 )
 
 
@@ -80,10 +80,10 @@ jim(
     ji(ax, i3, "2D default", xlabel="x", ylabel="y"),
     ji(ax, i3, yflip=false, "2D yflip=false"),
     ji(ax, i3, yflip=true, "2D yflip=true"),
-    ji(ax..., i4, ncol=2, "3D default"),
-    ji(ax..., i4, ncol=2, yflip=false, "3D yflip=false"),
-    ji(ax..., i4, ncol=2, yflip=true, "3D yflip=true"),
-    prompt = false,
+    ji(ax, i4, ncol=2, "3D default"),
+    ji(ax, i4, ncol=2, yflip=false, "3D yflip=false"),
+    ji(ax, i4, ncol=2, yflip=true, "3D yflip=true"),
+    prompt = false, gui = true,
 )
 
 #=
