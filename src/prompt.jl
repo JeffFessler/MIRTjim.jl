@@ -61,9 +61,9 @@ function wait_for_key( ;
     print(io_out, prompt)
 
     t = REPL.TerminalMenus.terminal
-    REPL.Terminals.raw!(t, true)
+    isinteractive() && REPL.Terminals.raw!(t, true)
     char = read(io_in, Char)
-    REPL.Terminals.raw!(t, false)
+    isinteractive() && REPL.Terminals.raw!(t, false)
 
     write(io_out, char)
     write(io_out, "\n")
