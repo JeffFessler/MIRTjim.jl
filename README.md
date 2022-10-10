@@ -17,9 +17,8 @@ for showing 2D grayscale images
 It is basically a wrapper around `Plots.heatmap`
 with natural defaults.
 As of v0.9 it supports
-axes, colorbar limits (`clims`) and images
-with physical units via
-[UnitfulRecipes.jl](https://github.com/jw3126/UnitfulRecipes.jl).
+axes, colorbar limit (`clim`) and images
+with physical units.
 
 
 ## Getting started

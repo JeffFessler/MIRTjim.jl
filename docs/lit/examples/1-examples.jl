@@ -103,8 +103,7 @@ jim(z4, "Arrays of images")
 
 # ## Units
 
-# `jim` supports units, with axis and colorbar units appended naturally,
-# thanks to UnitfulRecipes.jl.
+# `jim` supports units, with axis and colorbar units appended naturally.
 
 x = 0.1*(1:9)u"m/s"
 y = (1:7)u"s"
@@ -113,7 +112,6 @@ jim(x, y, zu, "units" ;
     clim=(0,7).*u"m", xlabel="rate", ylabel="time", colorbar_title="distance")
 
 # Note that `aspect_ratio` reverts to `:auto` when axis units differ.
-# See `UnitfulRecipes.jl` to customize the units.
 
 
 # Image spacing is appropriate even for non-square pixels
@@ -181,7 +179,7 @@ jim(:pop!); # restore
 
 p1 = jim(rand(5,7); prompt=false)
 p2 = jim(rand(6,8); color=:viridis, prompt=false)
-p3 = jim(rand(9,7); title="plot 3", prompt=false)
+p3 = jim(rand(9,7); color=:cividis, title="plot 3", prompt=false)
 jim(p1, p2, p3; layout=(1,3), gui=true)
 
 
