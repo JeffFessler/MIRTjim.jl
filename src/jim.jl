@@ -256,7 +256,6 @@ function _jim(z::AbstractMatrix{<:RealU} ;
 
     else
 
-#@show aspect_ratio size(z) x y length(x) length(y)
         p = heatmap(x, y, z' ;
             transpose = false,
             clim,
