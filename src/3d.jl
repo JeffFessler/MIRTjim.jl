@@ -39,7 +39,16 @@ Allow user to provide the `axes` of `array`.
 (Only `x = axes[1]` and `y = axes[2]` are used.)
 """
 function jim(ax::Tuple, f; kwargs...)
-   length(ax) == ndims(f) || throw("axes dimension mismatch")
+   2 ≤ length(ax) || throw("need at least 2 axes")
+   if f isa Vector{<:Array}
+        ndim = ndims(f[1])
+        (length(ax) ≤ ndim) ||
+            # the final axes could correspond to the # of arrays
+            ((length(ax) == ndim+1) && length(ax[end]) == length(f)) ||
+            throw("axes dimension mismatch for Vector{<:Array}")
+   else
+        length(ax) ≤ ndims(f) || throw("axes dimension mismatch for Array")
+   end
    jim(f; x = ax[1], y = ax[2], kwargs...)
 end
 
