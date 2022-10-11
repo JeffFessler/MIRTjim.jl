@@ -3,7 +3,6 @@
 https://github.com/JeffFessler/MIRTjim.jl
 
 [![action status][action-img]][action-url]
-[![pkgeval status][pkgeval-img]][pkgeval-url]
 [![codecov][codecov-img]][codecov-url]
 [![license][license-img]][license-url]
 [![docs-stable][docs-stable-img]][docs-stable-url]
@@ -95,8 +94,6 @@ Tested with Julia ≥ 1.6.
 [action-url]: https://github.com/JeffFessler/MIRTjim.jl/actions
 [build-img]: https://github.com/JeffFessler/MIRTjim.jl/workflows/CI/badge.svg?branch=main
 [build-url]: https://github.com/JeffFessler/MIRTjim.jl/actions?query=workflow%3ACI+branch%3Amain
-[pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/M/MIRTjim.svg
-[pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/M/MIRTjim.html
 [code-blue-img]: https://img.shields.io/badge/code%20style-blue-4495d1.svg
 [code-blue-url]: https://github.com/invenia/BlueStyle
 [codecov-img]: https://codecov.io/github/JeffFessler/MIRTjim.jl/coverage.svg?branch=main
