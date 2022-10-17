@@ -29,7 +29,7 @@ The user can set the default by invoking (e.g.) `jim(:aspect_ratio, :equal)`.
 Otherwise, the default from `jim_def[:aspect_ratio]` is `:infer`,
 which will lead to `:equal`
 if `x` and `y` have the same units,
-or if `Δx == Δy` (square pixels).
+or if `Δx ≈ Δy` (square pixels).
 Otherwise revert to `:auto`.
 """
 function _aspect_ratio(x, y)
@@ -39,8 +39,8 @@ function _aspect_ratio(x, y)
     # if x and y have units that are the same, then use `:equal`
     _units_same(x[1], y[1]) && return :equal
 
-    # if `Δx == Δy` (square pixels), then use `:equal`.
-    ((x[2]-x[1]) == (y[2]-y[1])) && return :equal
+    # if `Δx ≈ Δy` (square pixels), then use `:equal`.
+    ((x[2]-x[1]) ≈ (y[2]-y[1])) && return :equal
 
     # otherwise revert to `:auto`
     return :auto
