@@ -117,8 +117,8 @@ jim(x, y, zu, "units" ;
 # Image spacing is appropriate even for non-square pixels
 # if Δx and Δy have matching units.
 
-x = LinRange(-2,2,201) * 1u"m"
-y = LinRange(-1.2,1.2,150) * 1u"m" # Δy ≢ Δx
+x = range(-2,2,201) * 1u"m"
+y = range(-1.2,1.2,150) * 1u"m" # Δy ≢ Δx
 z = @. sqrt(x^2 + (y')^2) ≤ 1u"m"
 jim(x, y, z, "Axis units with unequal spacing"; color=:cividis)
 
