@@ -241,7 +241,11 @@ function _jim(z::AbstractMatrix{<:RealU} ;
         tmp = (_mingood(z) == _maxgood(z)) ? "Uniform $(z[1])" :
             "Nearly uniform $((_mingood(z),_maxgood(z)))"
 
-        p = plot( ; aspect_ratio,
+        p = plot(
+            [xlims[1]], [ylims[1]], # due to plots issue #4576
+            ;
+            label="",
+            aspect_ratio,
             xlims,
             ylims,
             title,

@@ -12,6 +12,8 @@ include("isplot.jl")
     y = 2u"s" * (1:5)
     f = x * y'
 
+    jim(x, y, ones(size(f))) # uniform
+
 #   @test @inferred jim(x, y, f) # Plots.Plot{Plots.GRBackend} vs Plot
 
     r = f / oneunit(f[1]) / 100 # real
