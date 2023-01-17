@@ -1,8 +1,6 @@
-#---------------------------------------------------------
-# # [Examples](@id 1-examples)
-#---------------------------------------------------------
-
 #=
+# [Examples](@id 1-examples)
+
 This page illustrates the Julia package
 [`MIRTjim`](https://github.com/JeffFessler/MIRTjim.jl).
 
@@ -15,7 +13,7 @@ This page was generated from a single Julia file:
 #md # using the "Edit on GitHub" link in the top right.
 
 #md # The corresponding notebook can be viewed in
-#md # [nbviewer](http://nbviewer.jupyter.org/) here:
+#md # [nbviewer](https://nbviewer.org/) here:
 #md # [`1-examples.ipynb`](@__NBVIEWER_ROOT_URL__/1-examples.ipynb),
 #md # and opened in [binder](https://mybinder.org/) here:
 #md # [`1-examples.ipynb`](@__BINDER_ROOT_URL__/1-examples.ipynb).
@@ -39,10 +37,9 @@ using InteractiveUtils: versioninfo
 
 isinteractive() ? jim(:prompt, true) : prompt(:draw);
 
-# ## Simple 2D image
-
-
 #=
+## Simple 2D image
+
 The simplest example is a 2D array.
 Note that `jim` is designed to show a function `f(x,y)`
 sampled as an array `z[x,y]` so the 1st index is horizontal direction.

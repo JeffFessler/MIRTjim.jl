@@ -102,5 +102,5 @@ Tested with Julia ≥ 1.6.
 [docs-stable-url]: https://JeffFessler.github.io/MIRTjim.jl/stable
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
 [docs-dev-url]: https://JeffFessler.github.io/MIRTjim.jl/dev
-[license-img]: http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat
+[license-img]: https://img.shields.io/badge/license-MIT-brightgreen.svg
 [license-url]: LICENSE
