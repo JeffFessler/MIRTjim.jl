@@ -1,8 +1,6 @@
-#---------------------------------------------------------
-# # [Option `yflip`](@id 2-yflip)
-#---------------------------------------------------------
-
 #=
+# [Option `yflip`](@id 2-yflip)
+
 Examples illustrating the `yflip` option in the Julia package
 [`MIRTjim`](https://github.com/JeffFessler/MIRTjim.jl).
 
@@ -15,7 +13,7 @@ This page was generated from a single Julia file:
 #md # using the "Edit on GitHub" link in the top right.
 
 #md # The corresponding notebook can be viewed in
-#md # [nbviewer](http://nbviewer.jupyter.org/) here:
+#md # [nbviewer](https://nbviewer.org/) here:
 #md # [`2-yflip.ipynb`](@__NBVIEWER_ROOT_URL__/2-yflip.ipynb),
 #md # and opened in [binder](https://mybinder.org/) here:
 #md # [`2-yflip.ipynb`](@__BINDER_ROOT_URL__/2-yflip.ipynb).
@@ -36,7 +34,7 @@ using InteractiveUtils: versioninfo
 isinteractive() ? jim(:prompt, true) : prompt(:draw);
 
 
-# ### Simple 2D image and 3D stack of images
+# ## Simple 2D image and 3D stack of images
 
 i1 = shepp_logan(128, SheppLoganEmis()) # 2D image
 i1 = i1[12:117,:] # non-square for illustration
@@ -61,7 +59,7 @@ jim(
 )
 
 
-# ### 2D image and 3D stack of images with specified x,y coordinates
+# ## 2D image and 3D stack of images with specified x,y coordinates
 
 #=
 Now consider the case where we think of the image as a function `f(x,y)`
