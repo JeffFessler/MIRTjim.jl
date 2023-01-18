@@ -45,3 +45,15 @@ jim(:abswarn, true)
 @isplot jim(rand(4,5), color=:hsv)
 @isplot jim(jim(rand(2,3)), jim(rand(3,2)) ; layout=(2,1))
 @isplot jim(:blank)
+
+
+# array of tuples
+x = [(rand(), rand()) for i in 1:4, j in 1:3]
+@isplot jim(x)
+@isplot jim(1:4, 1:3, x, "test")
+
+
+# array of vectors
+x = [rand(2) for i in 1:4, j in 1:3]
+@isplot jim(x)
+@isplot jim(1:4, 1:3, x, "test")
