@@ -1,7 +1,7 @@
 name = "MIRTjim"
 uuid = "170b2178-6dee-4cb0-8729-b3e8b57834cc"
 authors = ["Jeff Fessler <fessler@umich.edu> and contributors"]
-version = "0.21.1"
+version = "0.22"
 
 [deps]
 AxisArrays = "39de3d68-74b9-583c-8d2d-e117c070f3a9"
@@ -19,4 +19,4 @@ LaTeXStrings = "1"
 MosaicViews = "0.3"
 OffsetArrays = "1.10, 1.12"
 Plots = "1.35"
-julia = "1.6"
+julia = "1.8"
