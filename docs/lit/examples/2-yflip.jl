@@ -3,20 +3,9 @@
 
 Examples illustrating the `yflip` option in the Julia package
 [`MIRTjim`](https://github.com/JeffFessler/MIRTjim.jl).
-
-This page was generated from a single Julia file:
-[2-yflip.jl](@__REPO_ROOT_URL__/2-yflip.jl).
 =#
 
-#md # In any such Julia documentation,
-#md # you can access the source code
-#md # using the "Edit on GitHub" link in the top right.
-
-#md # The corresponding notebook can be viewed in
-#md # [nbviewer](https://nbviewer.org/) here:
-#md # [`2-yflip.ipynb`](@__NBVIEWER_ROOT_URL__/2-yflip.ipynb),
-#md # and opened in [binder](https://mybinder.org/) here:
-#md # [`2-yflip.ipynb`](@__BINDER_ROOT_URL__/2-yflip.ipynb).
+#srcURL
 
 
 # ### Setup
@@ -59,9 +48,9 @@ jim(
 )
 
 
-# ## 2D image and 3D stack of images with specified x,y coordinates
-
 #=
+## 2D image and 3D stack of images with specified x,y coordinates
+
 Now consider the case where we think of the image as a function `f(x,y)`
 in the typical case where 0,0 is in the "center" of the image.
 This convention is more common in physics-based imaging and inverse problems
@@ -91,13 +80,4 @@ but one can modify the default to achieve other behaviors.
 =#
 
 
-# ### Reproducibility
-
-# This page was generated with the following version of Julia:
-
-io = IOBuffer(); versioninfo(io); split(String(take!(io)), '\n')
-
-
-# And with the following package versions
-
-import Pkg; Pkg.status()
+include("../../../inc/reproduce.jl")

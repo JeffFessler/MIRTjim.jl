@@ -3,20 +3,9 @@
 
 This page illustrates the Julia package
 [`MIRTjim`](https://github.com/JeffFessler/MIRTjim.jl).
-
-This page was generated from a single Julia file:
-[1-examples.jl](@__REPO_ROOT_URL__/1-examples.jl).
 =#
 
-#md # In any such Julia documentation,
-#md # you can access the source code
-#md # using the "Edit on GitHub" link in the top right.
-
-#md # The corresponding notebook can be viewed in
-#md # [nbviewer](https://nbviewer.org/) here:
-#md # [`1-examples.ipynb`](@__NBVIEWER_ROOT_URL__/1-examples.ipynb),
-#md # and opened in [binder](https://mybinder.org/) here:
-#md # [`1-examples.ipynb`](@__BINDER_ROOT_URL__/1-examples.ipynb).
+#srcURL
 
 
 # ### Setup
@@ -64,17 +53,21 @@ isinteractive() && prompt();
 jim(z, "hello")
 
 
-# ## OffsetArrays
+#=
+## OffsetArrays
 
-# `jim` displays the axes naturally.
+`jim` displays the axes naturally.
+=#
 
 zo = OffsetArray(z, (-3,-1))
 jim(zo, "OffsetArray example")
 
 
-# ## 3D arrays
+#=
+## 3D arrays
 
-# `jim` automatically makes 3D arrays into a mosaic.
+`jim` automatically makes 3D arrays into a mosaic.
+=#
 
 f3 = reshape(1:(9*7*6), (9, 7, 6))
 jim(f3, "3D")
@@ -89,18 +82,22 @@ jim(x11, "nrow=3"; nrow=3)
 jim(x11, "ncol=6"; ncol=6)
 
 
-# ## Arrays of images
+#=
+## Arrays of images
 
-# `jim` automatically makes arrays of images into a mosaic.
+`jim` automatically makes arrays of images into a mosaic.
+=#
 
 z3 = reshape(1:(9*7*6), (7, 9, 6))
 z4 = [z3[:,:,(j-1)*3+i] for i=1:3, j=1:2]
 jim(z4, "Arrays of images")
 
 
-# ## Units
+#=
+## Units
 
-# `jim` supports units, with axis and colorbar units appended naturally.
+`jim` supports units, with axis and colorbar units appended naturally.
+=#
 
 x = 0.1*(1:9)u"m/s"
 y = (1:7)u"s"
@@ -180,13 +177,4 @@ p3 = jim(rand(9,7); color=:cividis, title="plot 3", prompt=false)
 jim(p1, p2, p3; layout=(1,3), gui=true)
 
 
-# ### Reproducibility
-
-# This page was generated with the following version of Julia:
-
-io = IOBuffer(); versioninfo(io); split(String(take!(io)), '\n')
-
-
-# And with the following package versions
-
-import Pkg; Pkg.status()
+include("../../../inc/reproduce.jl")
