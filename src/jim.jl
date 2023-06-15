@@ -6,6 +6,7 @@ jiffy image display
 
 export jim
 
+using ColorTypes: Colorant
 using Plots: heatmap, plot, plot!, Plot
 import Plots # gui
 using MosaicViews: mosaicview
@@ -103,7 +104,9 @@ end
 _maxgood(z::AbstractArray{<:Number}) = _dogood(z, maximum, -Inf)
 _maxgood(z::AbstractArray{<:AbstractArray}) = maximum(_maxgood, z)
 _mingood(z::AbstractArray{<:Number}) = _dogood(z, minimum, Inf)
+_mingood(z::AbstractArray{T}) where T <: Colorant = zero(T)
 _mingood(z::AbstractArray{<:AbstractArray}) = minimum(_mingood, z)
+_mingood(z::AbstractArray{<:AbstractArray{<:Colorant}}) = _mingood(z[1])
 
 
 """
@@ -199,7 +202,7 @@ end
 For RGB images, ignore `clim`, `color`, `x`, `y`.
 """
 function jim(
-    z::AbstractMatrix ; # RGB
+    z::AbstractMatrix{<:Colorant} ; # RGB
     kwargs...,
 )
     xy = () # https://github.com/JuliaPlots/Plots.jl/issues/4158
