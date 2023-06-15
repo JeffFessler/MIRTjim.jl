@@ -6,6 +6,7 @@ jiffy image display
 
 export jim
 
+using ColorTypes: Colorant
 using Plots: heatmap, plot, plot!, Plot
 import Plots # gui
 using MosaicViews: mosaicview
@@ -103,7 +104,9 @@ end
 _maxgood(z::AbstractArray{<:Number}) = _dogood(z, maximum, -Inf)
 _maxgood(z::AbstractArray{<:AbstractArray}) = maximum(_maxgood, z)
 _mingood(z::AbstractArray{<:Number}) = _dogood(z, minimum, Inf)
+_mingood(z::AbstractArray{T}) where T <: Colorant = zero(T)
 _mingood(z::AbstractArray{<:AbstractArray}) = minimum(_mingood, z)
+_mingood(z::AbstractArray{<:AbstractArray{<:Colorant}}) = _mingood(z[1])
 
 
 """
@@ -182,7 +185,7 @@ function jim(
     kwargs...,
 )
 
-    !any(isfinite, z) && throw("no finite values")
+    any(isfinite, z) || throw("no finite values")
 
     if all(z -> imag(z) == zero(real(z[1])), z)
         z = real(z) # remove any zero imaginary part
@@ -194,9 +197,36 @@ function jim(
 end
 
 
-# 2D RealU matrix
-function _jim(z::AbstractMatrix{<:RealU} ;
-    clim = nothing_else(jim_def[:clim], (_mingood(z), _maxgood(z))),
+"""
+    jim(z::Matrix{<:Colorant}; kwargs...)
+For RGB images, ignore `clim`, `color`, `x`, `y`.
+"""
+function jim(
+    z::AbstractMatrix{<:Colorant} ; # RGB
+    kwargs...,
+)
+    xy = () # https://github.com/JuliaPlots/Plots.jl/issues/4158
+    return _jim(z ; xy, kwargs...)
+end
+
+
+_clim(z::AbstractMatrix) = nothing
+_clim(z::AbstractMatrix{<:Number}) = nothing_else(jim_def[:clim], (_mingood(z), _maxgood(z)))
+
+# is the input image nearly uniform?
+function _uniform(z::AbstractMatrix{<:Number})
+    if _mingood(z) ≈ _maxgood(z) # uniform or nearly uniform image
+        return (_mingood(z) == _maxgood(z)) ? "Uniform $(z[1])" :
+            "Nearly uniform $((_mingood(z),_maxgood(z)))"
+    end
+    return nothing
+end
+
+_uniform(z::AbstractMatrix) = nothing
+
+# 2D image
+function _jim(z::AbstractMatrix ;
+    clim = _clim(z),
     color = jim_def[:color],
     colorbar = jim_def[:colorbar],
     title::AbstractString = jim_def[:title],
@@ -205,6 +235,7 @@ function _jim(z::AbstractMatrix{<:RealU} ;
     prompt::Bool = jim_def[:prompt],
     x::AbstractVector{<:RealU} = fft0 ? _fft0_axis(size(z,1)) : axes(z,1),
     y::AbstractVector{<:RealU} = fft0 ? _fft0_axis(size(z,2)) : axes(z,2),
+    xy = (x, y),
     aspect_ratio = _aspect_ratio(x, y),
     xticks = _ticks(x),
     yticks = _ticks(y),
@@ -234,15 +265,13 @@ function _jim(z::AbstractMatrix{<:RealU} ;
 
     length.((x,y)) == size(z) || throw("x,y size mismatch")
     # warnings for non-number values
-    infwarn && any(isinf, z) && @warn("$(sum(isinf, z)) ±Inf")
-    nanwarn && any(isnan, z) && @warn("$(sum(isnan, z)) NaN")
+    infwarn && any(isinf, z) && @warn("$(count(isinf, z)) ±Inf")
+    nanwarn && any(isnan, z) && @warn("$(count(isnan, z)) NaN")
 
-    if _mingood(z) ≈ _maxgood(z) # uniform or nearly uniform image
-        tmp = (_mingood(z) == _maxgood(z)) ? "Uniform $(z[1])" :
-            "Nearly uniform $((_mingood(z),_maxgood(z)))"
-
+    tmp = _uniform(z) # uniform or nearly uniform image
+    if !isnothing(tmp)
         p = plot(
-            [xlims[1]], [ylims[1]], # due to plots issue #4576
+            [xlims[1]], [ylims[1]], # https://github.com/JuliaPlots/Plots.jl/issues/4576
             ;
             label="",
             aspect_ratio,
@@ -260,7 +289,7 @@ function _jim(z::AbstractMatrix{<:RealU} ;
 
     else
 
-        p = heatmap(x, y, z' ;
+        p = heatmap(xy..., z' ;
             transpose = false,
             clim,
             color,
@@ -321,6 +350,8 @@ function jim(z::AxisMatrix{<:Number} ;
     jim(parent(z) ; x, y, xlabel, ylabel, kwargs...)
 end
 
+
+# Convenience methods
 
 """
     jim(z, title::String ; kwargs...)

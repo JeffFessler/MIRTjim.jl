@@ -14,6 +14,7 @@ This page illustrates the Julia package
 
 using MIRTjim: jim, prompt
 using AxisArrays: AxisArray
+using ColorTypes: RGB
 using OffsetArrays: OffsetArray
 using Unitful
 using Unitful: μm, s
@@ -145,6 +146,10 @@ za = AxisArray(x * y'; x, y)
 jim(za, "AxisArray")
 
 
+# ## Color images
+jim(rand(RGB{Float32}, 8, 6); title="RGB image")
+
+
 # ## Options
 
 # See the docstring for `jim` for its many options.
@@ -164,17 +169,20 @@ jim(rand(9,7), "rand", color=:viridis) # kwargs... passed to heatmap()
 jim(:pop!); # restore
 
 
-# ## Layout
+#=
+## Layout
 
-# One can use `jim` just like `plot` with a layout of subplots.
-# The `gui=true` option is useful when you want a figure to appear
-# even when other code follows.
-# Often it is used with the `prompt=true` option (not shown here).
+One can use `jim` just like `plot` with a layout of subplots.
+The `gui=true` option is useful when you want a figure to appear
+even when other code follows.
+Often it is used with the `prompt=true` option (not shown here).
+The `size` option helps avoid excess borders.
+=#
 
 p1 = jim(rand(5,7); prompt=false)
 p2 = jim(rand(6,8); color=:viridis, prompt=false)
 p3 = jim(rand(9,7); color=:cividis, title="plot 3", prompt=false)
-jim(p1, p2, p3; layout=(1,3), gui=true)
+jim(p1, p2, p3; layout=(1,3), gui=true, size = (600,200))
 
 
 include("../../../inc/reproduce.jl")

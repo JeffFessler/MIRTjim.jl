@@ -2,10 +2,10 @@
 
 export jim
 
+using ColorTypes: Colorant
 using Plots: plot!
 import Plots # gui
 using MosaicViews: mosaic
-#using MIRTjim: prompt
 
 
 # helper
@@ -18,7 +18,7 @@ _ratio(ncol, n1, n2, n3, dx::Number, dy::Number) = # units
 
 
 """
-    jim(z::AbstractArray{<:AbstractArray{<:Number}} ; kwargs...)
+    jim(z::AbstractArray{<:AbstractArray{<:Union{Number,Colorant}}} ; kwargs...)
 
 Display an array of images.
 Same arguments and options as display of a 3D stack of images.
@@ -26,7 +26,7 @@ The argument `ratio` defaults to `/(Plots.default(:size)...)`
 and affects the default `ncol` value.
 """
 function jim(
-    z::AbstractArray{<:AbstractArray{<:Number}} ;
+    z::AbstractArray{<:AbstractArray{<:Union{Number,Colorant}}} ;
     gui::Bool = jim_def[:gui],
     prompt::Bool = jim_def[:prompt],
     line3plot = jim_def[:line3plot],

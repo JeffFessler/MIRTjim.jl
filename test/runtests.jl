@@ -15,12 +15,19 @@ end
     @test isempty(detect_ambiguities(MIRTjim))
 end
 
-include("axis.jl")
-include("caller_name.jl")
-include("offset.jl")
-include("prompt.jl")
-include("unit.jl")
-include("mid3.jl")
+list = [
+"axis.jl"
+"caller_name.jl"
+"color.jl"
+"offset.jl"
+"prompt.jl"
+"unit.jl"
+"mid3.jl"
+]
+
+for file in list
+    include(file)
+end
 
 @testset "array" begin
     include("array.jl")

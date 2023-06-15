@@ -48,12 +48,12 @@ jim(:abswarn, true)
 
 
 # array of tuples
-x = [(rand(), rand()) for i in 1:4, j in 1:3]
-@isplot jim(x)
-@isplot jim(1:4, 1:3, x, "test")
+z = [(rand(), rand()) for i in 1:4, j in 1:3]
+@isplot jim(z)
+@isplot jim(1:4, 1:3, z, "test")
 
 
 # array of vectors
-x = [rand(2) for i in 1:4, j in 1:3]
-@isplot jim(x)
-@isplot jim(1:4, 1:3, x, "test")
+z = [rand(2) for i in 1:4, j in 1:3]
+@isplot jim(z)
+@isplot jim(1:4, 1:3, z, "test")
