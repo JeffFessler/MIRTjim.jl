@@ -5,10 +5,6 @@ using MIRTjim
 
 ENV["GKSwstype"] = "100"
 
-macro isplot(ex) # @isplot macro to streamline tests
-    :(@test $(esc(ex)) isa Plots.Plot)
-end
-
 @testset "MIRTjim" begin
     include("jim.jl")
 
