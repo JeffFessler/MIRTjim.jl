@@ -1,6 +1,9 @@
 """
 Module `MIRTjim` exports the "jiffy image display" method `jim`,
-and the two helper methods `caller_name` and `prompt`.
+and the helper methods:
+- `caller_name`
+- `mid3`
+- `prompt`
 """
 module MIRTjim
 

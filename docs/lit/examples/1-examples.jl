@@ -12,7 +12,7 @@ This page illustrates the Julia package
 
 # Packages needed here.
 
-using MIRTjim: jim, prompt
+using MIRTjim: jim, prompt, mid3
 using AxisArrays: AxisArray
 using ColorTypes: RGB
 using OffsetArrays: OffsetArray
@@ -71,7 +71,7 @@ jim(zo, "OffsetArray example")
 =#
 
 f3 = reshape(1:(9*7*6), (9, 7, 6))
-jim(f3, "3D")
+jim(f3, "3D"; size=(600, 300))
 
 
 # One can specify how many images per row or column for such a mosaic.
@@ -80,7 +80,28 @@ x11 = reshape(1:(5*6*11), (5, 6, 11))
 jim(x11, "nrow=3"; nrow=3)
 
 #
-jim(x11, "ncol=6"; ncol=6)
+jim(x11, "ncol=6"; ncol=6, size=(600, 200))
+
+
+#=
+## Central slices with `mid3`
+The `mid3` function shows the central x-y, y-z, and x-z slices
+[(axial, coronal, sagittal) planes](https://en.wikipedia.org/wiki/Anatomical_plane).
+Making useful `xticks` and `yticks` in this case takes some fiddling.
+=#
+x,y,z = -20:20, -10:10, 1:30
+xc = reshape(x, :, 1, 1)
+yc = reshape(y, 1, :, 1)
+zc = reshape(z, 1, 1, :)
+rx = reshape(range(2, 19, length(z)), size(zc))
+ry = reshape(range(2, 9, length(z)), size(zc))
+cone = @. abs2(xc / rx) + abs2(yc / ry) < 1
+jim(mid3(cone); color=:cividis, title="mid3")
+xticks = ([1, length(x), length(x)+length(z)],
+ ["$(x[begin])", "$(x[end]), $(z[begin])", "$(z[end])"])
+yticks = ([1, length(y), length(y)+length(z)],
+ ["$(y[begin])", "$(y[end]), $(z[begin])", "$(z[end])"])
+Plots.plot!(;xticks , yticks)
 
 
 #=
@@ -115,7 +136,7 @@ jim(x, y, zu, "units" ;
 x = range(-2,2,201) * 1u"m"
 y = range(-1.2,1.2,150) * 1u"m" # Δy ≢ Δx
 z = @. sqrt(x^2 + (y')^2) ≤ 1u"m"
-jim(x, y, z, "Axis units with unequal spacing"; color=:cividis)
+jim(x, y, z, "Axis units with unequal spacing"; color=:cividis, size=(600,350))
 
 
 #=

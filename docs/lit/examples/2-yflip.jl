@@ -37,7 +37,8 @@ This is a typical convention in "image processing" of digital images
 that lack any physical coordinates for their axes.
 =#
 
-ji = (args...; kwargs...) -> jim(args...; kwargs..., prompt=false)
+ji = (args...; kwargs...) ->
+ jim(args...; size=(700,400), kwargs..., prompt=false)
 jim(
     ji(i1, "2D default"),
     ji(i1, yflip=false, "2D yflip=false"),
