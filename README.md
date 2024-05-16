@@ -81,7 +81,7 @@ by avoiding a dependence on `Plots.jl` there.
 
 ### Compatibility
 
-Tested with Julia ≥ 1.9.
+Tested with Julia ≥ 1.10.
 
 
 ### Related packages
