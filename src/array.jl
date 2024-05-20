@@ -1,6 +1,6 @@
 # array.jl - arrays of images
 
-export jim
+export jim!
 
 using ColorTypes: Colorant
 using Plots: plot!
@@ -19,13 +19,15 @@ _ratio(ncol, n1, n2, n3, dx::Number, dy::Number) = # units
 
 """
     jim(z::AbstractArray{<:AbstractArray{<:Union{Number,Colorant}}} ; kwargs...)
+    jim!(pp::Plot, ...)
 
 Display an array of images.
 Same arguments and options as display of a 3D stack of images.
 The argument `ratio` defaults to `/(Plots.default(:size)...)`
 and affects the default `ncol` value.
 """
-function jim(
+function jim!(
+    pp::Plot,
     z::AbstractArray{<:AbstractArray{<:Union{Number,Colorant}}} ;
     gui::Bool = jim_def[:gui],
     prompt::Bool = jim_def[:prompt],
@@ -111,9 +113,9 @@ function jim(
         y = reverse(y)
     end
 
-    p = jim(zz ; x, y, xticks, yticks, yflip,
-            gui=false, prompt=false, aspect_ratio, kwargs...,
-        )
+    jim!(pp, zz ; x, y, xticks, yticks, yflip,
+        gui=false, prompt=false, aspect_ratio, kwargs...,
+    )
 
     if n3 > 1 && line3plot # lines around each subimage
         n1 += mosaic_npad
@@ -126,7 +128,7 @@ function jim(
             fy = o -> y[end] - o * (y[2] - y[1])
         end
         function plot_box!(ox, oy)
-            plot!(p,
+            plot!(pp,
                 fx.(ox .+ [0,1,1,0,0] * n1 .- 1),
                 fy.(oy .+ [0,0,1,1,0] * n2 .- 1),
                 line = jim_def[:line3type], label="",
@@ -139,8 +141,8 @@ function jim(
         end
     end
 
-    plot!()
+    plot!(pp)
     gui && Plots.gui()
     prompt && MIRTjim.prompt()
-    return p
+    return pp
 end

@@ -4,10 +4,10 @@ jiffy image display
 2019-02-23 Jeff Fessler, University of Michigan
 =#
 
-export jim
+export jim, jim!
 
 using ColorTypes: Colorant
-using Plots: heatmap, plot, plot!, Plot
+using Plots: heatmap!, plot, plot!, Plot
 import Plots # gui
 using MosaicViews: mosaicview
 using FFTViews: FFTView
@@ -15,6 +15,15 @@ using OffsetArrays: OffsetMatrix
 import OffsetArrays # no_offset_view
 using AxisArrays: AxisArray, axisnames, axisvalues
 #using MIRTjim: prompt
+
+"""
+    jim(args...; kwargs...)
+Create a blank plot and then call `jim!`.
+"""
+function jim(args...; kwargs...)
+    pp = plot()
+    return jim!(pp, args...; kwargs...)
+end
 
 
 _units_same(x::Real, y::Real) = false
@@ -144,7 +153,7 @@ _fft0_axis(n::Int) = (-n÷2):(n÷2 - iseven(n))
 
 
 """
-    jim(z, ...)
+    jim(z, ...) or jim!(pp::Plot, z, ...)
 
 A jiffy image display of `z` using `heatmap`.
 
@@ -179,7 +188,8 @@ option
 out
 - returns plot handle, type `Plots.Plot`
 """
-function jim(
+function jim!(
+    pp::Plot,
     z::AbstractMatrix{<:Number} ;
     abswarn::Bool = jim_def[:abswarn],
     kwargs...,
@@ -193,20 +203,22 @@ function jim(
         abswarn && (@warn "magnitude at $(caller_name())")
         z = abs.(z) # due to Unitful complex types not being <: Complex
     end
-    return _jim(z ; kwargs...)
+    return _jim!(pp, z ; kwargs...)
 end
 
 
 """
-    jim(z::Matrix{<:Colorant}; kwargs...)
+    jim(z::Matrix{<:Colorant}; kwargs...) or jim!(pp::Plot, ...)
+    jim!(pp::Plot, ...)
 For RGB images, ignore `clim`, `color`, `x`, `y`.
 """
-function jim(
+function jim!(
+    pp::Plot,
     z::AbstractMatrix{<:Colorant} ; # RGB
     kwargs...,
 )
     xy = () # https://github.com/JuliaPlots/Plots.jl/issues/4158
-    return _jim(z ; xy, kwargs...)
+    return _jim!(pp, z ; xy, kwargs...)
 end
 
 
@@ -225,7 +237,9 @@ end
 _uniform(z::AbstractMatrix) = nothing
 
 # 2D image
-function _jim(z::AbstractMatrix ;
+function _jim!(
+    pp::Plot,
+    z::AbstractMatrix ;
     clim = _clim(z),
     color = jim_def[:color],
     colorbar = jim_def[:colorbar],
@@ -270,7 +284,7 @@ function _jim(z::AbstractMatrix ;
 
     tmp = _uniform(z) # uniform or nearly uniform image
     if !isnothing(tmp)
-        p = plot(
+        plot!(pp,
             [xlims[1]], [ylims[1]], # https://github.com/JuliaPlots/Plots.jl/issues/4576
             ;
             label="",
@@ -289,7 +303,7 @@ function _jim(z::AbstractMatrix ;
 
     else
 
-        p = heatmap(xy..., z' ;
+        heatmap!(pp, xy..., z' ;
             transpose = false,
             clim,
             color,
@@ -309,7 +323,7 @@ function _jim(z::AbstractMatrix ;
 
     gui && Plots.gui()
     prompt && MIRTjim.prompt()
-    return p
+    return pp
 end # jim
 
 
@@ -317,12 +331,14 @@ end # jim
 # OffsetArray / OffsetMatrix
 # https://github.com/JuliaPlots/Plots.jl/issues/2410
 _axes(z,j) = axes(z,j).parent .+ axes(z,j).offset
-function jim(z::OffsetMatrix{<:Number} ;
+function jim!(
+    pp::Plot,
+    z::OffsetMatrix{<:Number} ;
     x = _axes(z,1),
     y = _axes(z,2),
     kwargs...
 )
-    jim(OffsetArrays.no_offset_view(z) ; x, y, kwargs...)
+    jim!(pp, OffsetArrays.no_offset_view(z) ; x, y, kwargs...)
 end
 
 #=
@@ -340,54 +356,58 @@ end
 
 # AxisArray / AxisMatrix
 const AxisMatrix{T} = AxisArray{T,2,D,Ax} where {T,D,Ax}
-function jim(z::AxisMatrix{<:Number} ;
+function jim!(
+    pp::Plot,
+    z::AxisMatrix{<:Number} ;
     x = axisvalues(z)[1],
     y = axisvalues(z)[2],
     xlabel = String(axisnames(z)[1]),
     ylabel = String(axisnames(z)[2]),
     kwargs...
 )
-    jim(parent(z) ; x, y, xlabel, ylabel, kwargs...)
+    jim!(pp, parent(z) ; x, y, xlabel, ylabel, kwargs...)
 end
 
 
 # Convenience methods
 
 """
-    jim(z, title::String ; kwargs...)
+    jim(z, title::String ; kwargs...) or jim!(pp::Plot, ...)
 """
-jim(z::AbstractArray, title::AbstractString ; kwargs...) =
-    jim(z ; title, kwargs...)
+jim!(pp::Plot, z::AbstractArray, title::AbstractString ; kwargs...) =
+    jim!(pp, z ; title, kwargs...)
 
 
 """
-    jim(x, y, z ; kwargs...)
+    jim(x, y, z ; kwargs...) or jim!(pp::Plot, ...)
 
 The `x` and `y` axes can be Unitful.
 """
-function jim(
+function jim!(
+    pp::Plot,
     x::AbstractVector{<:RealU},
     y::AbstractVector{<:RealU},
     z ;
     kwargs...,
 )
-    return jim(z ; x, y, kwargs...)
+    return jim!(pp, z ; x, y, kwargs...)
 end
 
 
 """
-    jim(x, y, z, title::String ; kwargs...)
+    jim(x, y, z, title::String ; kwargs...) or jim!(pp::Plot, ...)
 
 Allow `title` as positional argument for convenience.
 """
-function jim(
+function jim!(
+    pp::Plot,
     x::AbstractVector{<:RealU},
     y::AbstractVector{<:RealU},
     z,
     title::AbstractString ;
     kwargs...,
 )
-    return jim(x, y, z ; title, kwargs...)
+    return jim!(pp, x, y, z ; title, kwargs...)
 end
 
 
@@ -408,12 +428,12 @@ Subplot-type layout, where `kwargs` are passed to `plot`.
 - `gui` call `Plots.gui()` immediately?; default `false`
 - `prompt` call `prompt()` immediately?; default `false`
 """
-function jim(p::Plot, args... ;
+function jim(p1::Plot, args... ;
     gui::Bool = jim_def[:gui],
     prompt::Bool = jim_def[:prompt],
     kwargs...,
 )
-    out = plot(p, args... ; kwargs...)
+    out = plot(p1, args... ; kwargs...)
     gui && Plots.gui()
     prompt && MIRTjim.prompt()
     return out

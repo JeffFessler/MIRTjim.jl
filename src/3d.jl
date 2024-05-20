@@ -5,41 +5,42 @@ using ColorTypes: Colorant
 
 
 # 3D (or higher), built on array version
-function jim(z::AbstractArray{<:Union{Number,Colorant}} ; kwargs...)
+function jim!(pp::Plot, z::AbstractArray{<:Union{Number,Colorant}} ; kwargs...)
     zz = reshape(z, size(z,1), size(z,2), :)
     out = [@view zz[:,:,i] for i in 1:size(zz,3)]
-    return jim(out ; kwargs...)
+    return jim!(pp, out ; kwargs...)
 end
 
 
 """
-    jim(x, y, z, array3d, [title] ; kwargs...)
+    jim(x, y, z, array3d, [title] ; kwargs...) or jim!(pp::Plot, ...)
 Allow user to provide
 the "z axis" of a 3D array,
 but ignore it without warning.
 """
-function jim(
+function jim!(
+    pp::Plot,
     x::AbstractVector{<:RealU},
     y::AbstractVector{<:RealU},
     z::AbstractVector{<:RealU}, # ignored!
     f::AbstractArray ; # could be 3D array or Vector of 2D arrays
     kwargs...,
 )
-    return jim(f ; x, y, kwargs...)
+    return jim!(pp, f ; x, y, kwargs...)
 end
 
-jim(x::AbstractVector{<:RealU}, y, z, f, title::String; kwargs...) =
-    jim(x, y, z, f; title, kwargs...)
+jim!(pp::Plot, x::AbstractVector{<:RealU}, y, z, f, title::String; kwargs...) =
+    jim!(pp, x, y, z, f; title, kwargs...)
 
 
 # axes tuples
 
 """
-    jim(axes::Tuple, array, [title] ; kwargs...)
+    jim(axes::Tuple, array, [title] ; kwargs...) or jim!(pp::Plot, ...)
 Allow user to provide the `axes` of `array`.
 (Only `x = axes[1]` and `y = axes[2]` are used.)
 """
-function jim(ax::Tuple, f; kwargs...)
+function jim!(pp::Plot, ax::Tuple, f; kwargs...)
    2 ≤ length(ax) || throw("need at least 2 axes")
    if f isa Vector{<:Array}
         ndim = ndims(f[1])
@@ -50,7 +51,8 @@ function jim(ax::Tuple, f; kwargs...)
    else
         length(ax) ≤ ndims(f) || throw("axes dimension mismatch for Array")
    end
-   jim(f; x = ax[1], y = ax[2], kwargs...)
+   jim!(pp, f; x = ax[1], y = ax[2], kwargs...)
 end
 
-jim(ax::Tuple, f, title::String; kwargs...) = jim(ax, f; title, kwargs...)
+jim!(pp::Plot, ax::Tuple, f, title::String; kwargs...) =
+    jim!(pp, ax, f; title, kwargs...)
