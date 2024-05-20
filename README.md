@@ -2,14 +2,19 @@
 
 https://github.com/JeffFessler/MIRTjim.jl
 
-[![action status][action-img]][action-url]
-[![codecov][codecov-img]][codecov-url]
-[![license][license-img]][license-url]
 [![docs-stable][docs-stable-img]][docs-stable-url]
 [![docs-dev][docs-dev-img]][docs-dev-url]
+[![action status][action-img]][action-url]
+[![pkgeval status][pkgeval-img]][pkgeval-url]
+[![codecov][codecov-img]][codecov-url]
+[![license][license-img]][license-url]
+[![Aqua QA][aqua-img]][aqua-url]
 [![code-style][code-blue-img]][code-blue-url]
+[![deps](https://juliahub.com/docs/MIRTjim/deps.svg)](https://juliahub.com/ui/Packages/MIRTjim)
+[![version](https://juliahub.com/docs/MIRTjim/version.svg)](https://juliahub.com/ui/Packages/MIRTjim)
+[![pkgeval](https://juliahub.com/docs/MIRTjim/pkgeval.svg)](https://juliahub.com/ui/Packages/MIRTjim)
 
-This Julia language repo
+This Julia package
 exports the `jim` method that provides a "jiffy image display"
 for showing 2D grayscale and color images
 (and 3D images as a mosaic).
@@ -92,6 +97,8 @@ Tested with Julia ≥ 1.10.
 <!-- URLs -->
 [action-img]: https://github.com/JeffFessler/MIRTjim.jl/workflows/CI/badge.svg
 [action-url]: https://github.com/JeffFessler/MIRTjim.jl/actions
+[aqua-img]: https://img.shields.io/badge/Aqua.jl-%F0%9F%8C%A2-aqua.svg
+[aqua-url]: https://github.com/JuliaTesting/Aqua.jl
 [build-img]: https://github.com/JeffFessler/MIRTjim.jl/workflows/CI/badge.svg?branch=main
 [build-url]: https://github.com/JeffFessler/MIRTjim.jl/actions?query=workflow%3ACI+branch%3Amain
 [code-blue-img]: https://img.shields.io/badge/code%20style-blue-4495d1.svg
@@ -104,3 +111,5 @@ Tested with Julia ≥ 1.10.
 [docs-dev-url]: https://JeffFessler.github.io/MIRTjim.jl/dev
 [license-img]: https://img.shields.io/badge/license-MIT-brightgreen.svg
 [license-url]: LICENSE
+[pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/I/ImageGeoms.svg
+[pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/I/ImageGeoms.html

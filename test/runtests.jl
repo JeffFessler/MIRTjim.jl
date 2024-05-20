@@ -1,7 +1,9 @@
 # runtests.jl
 
 using Test: @test, @testset, detect_ambiguities
-using MIRTjim
+using MIRTjim: MIRTjim
+
+include("aqua.jl")
 
 ENV["GKSwstype"] = "100"
 
