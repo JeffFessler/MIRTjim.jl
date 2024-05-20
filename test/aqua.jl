@@ -3,5 +3,6 @@ import Aqua
 using Test: @testset
 
 @testset "aqua" begin
-    Aqua.test_all(MIRTjim; ambiguities=false) # todo: so many
+    Aqua.test_ambiguities(MIRTjim) # got StatsBase errors without isolating!?
+    Aqua.test_all(MIRTjim; ambiguities = false)
 end
