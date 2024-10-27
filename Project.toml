@@ -14,7 +14,7 @@ REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [compat]
 AxisArrays = "0.4.4, 0.4.6"
-ColorTypes = "0.11"
+ColorTypes = "0.11, 0.12"
 FFTViews = "0.3"
 MosaicViews = "0.3"
 OffsetArrays = "1.12"
