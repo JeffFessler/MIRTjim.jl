@@ -26,7 +26,7 @@ function jim(args...; kwargs...)
 end
 
 
-_units_same(x::Real, y::Real) = false
+_units_same(x::Real, y::Real) = false # COV_EXCL_LINE
 _units_same(x::Number, y::Number) = oneunit(x) == oneunit(y)
 
 
@@ -222,7 +222,7 @@ function jim!(
 end
 
 
-_clim(z::AbstractMatrix) = nothing
+_clim(z::AbstractMatrix) = nothing # COV_EXCL_LINE
 _clim(z::AbstractMatrix{<:Number}) = nothing_else(jim_def[:clim], (_mingood(z), _maxgood(z)))
 
 # is the input image nearly uniform?
@@ -234,7 +234,7 @@ function _uniform(z::AbstractMatrix{<:Number})
     return nothing
 end
 
-_uniform(z::AbstractMatrix) = nothing
+_uniform(z::AbstractMatrix) = nothing # COV_EXCL_LINE
 
 # 2D image
 function _jim!(
