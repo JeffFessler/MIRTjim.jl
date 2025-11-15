@@ -20,8 +20,7 @@ for showing 2D grayscale and color images
 (and 3D images as a mosaic).
 It is basically a wrapper around `Plots.heatmap`
 with natural defaults.
-As of v0.9 it supports
-axes, colorbar limit (`clim`) and images
+It supports axes, colorbar limit (`clim`) and images
 with physical units.
 
 
@@ -86,7 +85,7 @@ by avoiding a dependence on `Plots.jl` there.
 
 ### Compatibility
 
-Tested with Julia ≥ 1.10.
+Tested with Julia ≥ 1.12.
 
 
 ### Related packages
