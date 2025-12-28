@@ -120,7 +120,7 @@ function jim!(
     if n3 > 1 && line3plot # lines around each subimage
         n1 += mosaic_npad
         n2 += mosaic_npad
-        m1 = (1+size(zz,1)) ÷ n1 # add one because of mosaicview non-edge
+        m1 = (1+size(zz,1)) ÷ n1 # add one because of mosaic non-edge
         m2 = (1+size(zz,2)) ÷ n2
         fx = o -> x[1] + o * (x[2] - x[1])
         fy = o -> y[1] + o * (y[2] - y[1])
@@ -143,6 +143,6 @@ function jim!(
 
     plot!(pp)
     gui && Plots.gui()
-    prompt && MIRTjim.prompt()
+    prompt && MIRTjim.prompt() # must self-qualify here
     return pp
 end
