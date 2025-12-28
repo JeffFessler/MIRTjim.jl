@@ -9,7 +9,6 @@ export jim, jim!
 using ColorTypes: Colorant
 using Plots: heatmap!, plot, plot!, Plot
 import Plots # gui
-using MosaicViews: mosaicview
 using FFTViews: FFTView
 using OffsetArrays: OffsetMatrix
 import OffsetArrays # no_offset_view
@@ -158,7 +157,7 @@ _fft0_axis(n::Int) = (-n÷2):(n÷2 - iseven(n))
 A jiffy image display of `z` using `heatmap`.
 
 in
-- `z` image, can be 2D or higher, if higher then it uses `mosaicviews`
+- `z` image, can be 2D or higher, if higher then it uses `mosaic`
 
 option
 - `aspect_ratio`; default `:equal` for square pixels (see `_aspect_ratio`)
@@ -167,13 +166,13 @@ option
 - `colorbar` (e.g. `:none`); default `:legend`
 - `gui` call `Plots.gui()` immediately?; default `false`
 - `prompt` call `prompt()` immediately?; default `false`
-- `ncol` for mosaicview for 3D and higher arrays; default `0` does auto select
+- `ncol` for mosaic for 3D and higher arrays; default `0` does auto select
    "Number of tiles in column direction."
-- `nrow` for mosaicview for 3D and higher arrays; default `0` does auto select
-- `padval` padding value for mosaic view; default `minimum(z)`
+- `nrow` for mosaic for 3D and higher arrays; default `0` does auto select
+- `padval` padding value for mosaic; default `minimum(z)`
 - `line3plot` lines around sub image for 3d mosaic; default `true`
 - `line3type` line type around sub image for 3d mosaic; default `(:yellow)`
-- `mosaic_npad` # of pixel padding for mosaic view; default `1`
+- `mosaic_npad` # of pixel padding for mosaic; default `1`
 - `fft0` if true use FFTView to display (2D only); default `false`
 - `title`; default `""`
 - `xlabel`; default `nothing` (or units if applicable)
