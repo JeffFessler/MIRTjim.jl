@@ -1,3 +1,4 @@
-ignore-identifiers-re = [
+[default]
+extend-ignore-identifiers-re = [
  "iz",
 ]
