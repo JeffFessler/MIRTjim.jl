@@ -1,7 +1,7 @@
 name = "MIRTjim"
 uuid = "170b2178-6dee-4cb0-8729-b3e8b57834cc"
-authors = ["Jeff Fessler <fessler@umich.edu> and contributors"]
-version = "0.26"
+authors = ["Jeff Fessler and contributors"]
+version = "0.27"
 
 [workspace]
 projects = ["docs", "test"]
