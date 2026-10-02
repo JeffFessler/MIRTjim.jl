@@ -8,7 +8,7 @@ export jim, jim!
 
 using ColorTypes: Colorant
 using Plots: heatmap!, plot, plot!, Plot
-import Plots # gui
+import Plots # backend, gui, GRbackend
 using FFTViews: FFTView
 using OffsetArrays: OffsetMatrix
 import OffsetArrays # no_offset_view
@@ -209,15 +209,22 @@ end
 """
     jim(z::Matrix{<:Colorant}; kwargs...) or jim!(pp::Plot, ...)
     jim!(pp::Plot, ...)
-For RGB images, ignore `clim`, `color`, `x`, `y`.
+
+For RGB images, ignore `clim`, `color`.
+
+Caution: `x`, `y` arguments are inaccurate with GR backend; see:
+https://github.com/JuliaPlots/Plots.jl/issues/4158
 """
 function jim!(
     pp::Plot,
     z::AbstractMatrix{<:Colorant} ; # RGB
+    xy_warn::Bool = Plots.backend() == Plots.GRBackend(),
     kwargs...,
 )
-    xy = () # https://github.com/JuliaPlots/Plots.jl/issues/4158
-    return _jim!(pp, z ; xy, kwargs...)
+    (haskey(kwargs, :x) || haskey(kwargs, :y) || haskey(kwargs, :xy)) &&
+        xy_warn &&
+        @warn("axes inaccurate due to https://github.com/JuliaPlots/Plots.jl/issues/4158")
+    return _jim!(pp, z ; #= xy = (), =# kwargs...)
 end
 
 

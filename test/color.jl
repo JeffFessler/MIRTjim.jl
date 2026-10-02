@@ -1,4 +1,4 @@
-# color.jl
+# test/color.jl
 
 using ColorTypes: RGB
 using MIRTjim: jim
@@ -21,4 +21,5 @@ z2 = stack(zz)
 @test !MIRTjim._units_same(0, 1)
 
 # https://github.com/JuliaPlots/Plots.jl/issues/4158
-#jim(0:(M-1), 0:(N-1), z) # todo: test after above issue is fixed
+# todo: remove xy_warn flag after above issue is fixed
+@isplot jim(0:(M-1), 0:(N-1), z; xy_warn = false)
